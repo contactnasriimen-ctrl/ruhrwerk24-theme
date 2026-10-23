@@ -1,0 +1,26 @@
+/*
+ * Block-Editor: Schrift und Farben wie auf der Website, damit Redakteure
+ * sehen, was sie bekommen.
+ */
+body {
+	font-family: var(--font);
+	font-size: var(--fs-m);
+	line-height: 1.7;
+	color: var(--text);
+}
+
+h1, h2, h3, h4,
+.editor-post-title__input {
+	font-family: var(--font);
+	font-stretch: var(--stretch-head);
+	font-weight: 800;
+	line-height: 1.1;
+	color: var(--ink);
+	letter-spacing: -.01em;
+}
+
+a { color: var(--accent-ink); }
+
+.wp-block { max-width: 760px; }
+.wp-block[data-align="wide"] { max-width: 1100px; }
+.wp-block[data-align="full"] { max-width: none; }

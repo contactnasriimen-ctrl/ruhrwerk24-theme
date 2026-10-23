@@ -1,0 +1,23 @@
+/*
+ * Hausschrift: Archivo (SIL Open Font License), lokal eingebunden.
+ * Variable Schrift mit Gewicht 100-900 und Breite 62-125 % - eine Datei
+ * deckt Fließtext und die schmalen Überschriften ab.
+ */
+@font-face {
+	font-family: "Archivo";
+	src: url("../fonts/archivo.woff2") format("woff2");
+	font-weight: 100 900;
+	font-stretch: 62% 125%;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Fallback mit angepassten Metriken, damit beim Nachladen nichts springt. */
+@font-face {
+	font-family: "Archivo Fallback";
+	src: local("Arial");
+	size-adjust: 103%;
+	ascent-override: 88%;
+	descent-override: 22%;
+	line-gap-override: 0%;
+}

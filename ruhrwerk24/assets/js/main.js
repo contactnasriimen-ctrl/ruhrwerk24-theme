@@ -1,0 +1,446 @@
+/**
+ * Ruhrwerk24 - Interaktion.
+ *
+ * Ohne Abhängigkeiten, ohne jQuery. Jede Funktion prüft selbst, ob ihre
+ * Elemente auf der Seite vorhanden sind. Fällt das Script aus, bleibt die
+ * Seite voll benutzbar: Formular, Menü-Links und Inhalte funktionieren
+ * auch ohne JavaScript.
+ */
+(() => {
+	'use strict';
+
+	const doc = document;
+	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	/* ------------------------------------------------------------------
+	 * Kopf: Schatten beim Scrollen, mobile Schnellleiste einblenden
+	 * ---------------------------------------------------------------- */
+	const header = doc.getElementById('header');
+	const callbar = doc.getElementById('callbar');
+
+	const onScroll = () => {
+		const y = window.scrollY;
+		header?.classList.toggle('is-scrolled', y > 8);
+		callbar?.classList.toggle('is-visible', y > 320);
+	};
+
+	window.addEventListener('scroll', onScroll, { passive: true });
+	onScroll();
+
+	/* ------------------------------------------------------------------
+	 * Mobiles Menü
+	 * ---------------------------------------------------------------- */
+	const burger = doc.getElementById('burger');
+	const drawer = doc.getElementById('drawer');
+
+	if (burger && drawer) {
+		const setOpen = (open) => {
+			if (open) {
+				const bottom = header ? header.getBoundingClientRect().bottom : 0;
+				drawer.style.setProperty('--drawer-top', `${Math.max(0, bottom)}px`);
+			}
+
+			drawer.hidden = !open;
+			burger.setAttribute('aria-expanded', String(open));
+			burger.setAttribute('aria-label', open ? burger.dataset.labelClose : burger.dataset.labelOpen);
+			doc.body.classList.toggle('drawer-open', open);
+
+			if (open) {
+				drawer.querySelector('a')?.focus({ preventScroll: true });
+			}
+		};
+
+		burger.addEventListener('click', () => setOpen(drawer.hidden));
+
+		doc.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && !drawer.hidden) {
+				setOpen(false);
+				burger.focus();
+			}
+		});
+
+		// Ein Klick auf einen Anker im Menü schließt es.
+		drawer.addEventListener('click', (e) => {
+			if (e.target.closest('a')) {
+				setOpen(false);
+			}
+		});
+
+		// Beim Wechsel auf Desktop-Breite nicht offen hängen bleiben.
+		window.matchMedia('(min-width: 901px)').addEventListener('change', (e) => {
+			if (e.matches) {
+				setOpen(false);
+			}
+		});
+	}
+
+	/* ------------------------------------------------------------------
+	 * Einblenden beim Scrollen
+	 * ---------------------------------------------------------------- */
+	const reveals = doc.querySelectorAll('.reveal:not(.is-in)');
+
+	if (reduceMotion || !('IntersectionObserver' in window)) {
+		reveals.forEach((el) => el.classList.add('is-in'));
+	} else {
+		const io = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('is-in');
+						io.unobserve(entry.target);
+					}
+				});
+			},
+			{ rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+		);
+
+		reveals.forEach((el) => io.observe(el));
+	}
+
+	/* ------------------------------------------------------------------
+	 * Kennzahlen hochzählen
+	 * Der Endwert steht bereits im HTML - wir zählen nur sichtbar hoch.
+	 * ---------------------------------------------------------------- */
+	const counters = doc.querySelectorAll('[data-count]');
+
+	if (counters.length && !reduceMotion && 'IntersectionObserver' in window) {
+		const count = (el) => {
+			const target = parseInt(el.dataset.count, 10);
+			const duration = 1400;
+			const start = performance.now();
+
+			const tick = (now) => {
+				const p = Math.min(1, (now - start) / duration);
+				const eased = 1 - Math.pow(1 - p, 3);
+				el.textContent = String(Math.round(target * eased));
+
+				if (p < 1) {
+					requestAnimationFrame(tick);
+				}
+			};
+
+			requestAnimationFrame(tick);
+		};
+
+		const co = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					count(entry.target);
+					co.unobserve(entry.target);
+				}
+			});
+		});
+
+		counters.forEach((el) => {
+			el.textContent = '0';
+			co.observe(el);
+		});
+	}
+
+	/* ------------------------------------------------------------------
+	 * 3D-Szene im Seitenkopf
+	 * Wird erst geladen, wenn der Browser Luft hat, und nur auf Geräten,
+	 * die WebGL flüssig darstellen. Bei "Bewegung reduzieren" gibt es ein
+	 * Standbild statt Animation.
+	 * ---------------------------------------------------------------- */
+	const scenes = doc.querySelectorAll('[data-scene3d]');
+
+	const canRender3D = () => {
+		const conn = navigator.connection;
+		if (conn && (conn.saveData || /2g/.test(conn.effectiveType || ''))) {
+			return false;
+		}
+		if (navigator.deviceMemory && navigator.deviceMemory < 4) {
+			return false;
+		}
+		try {
+			const c = doc.createElement('canvas');
+			return !!(c.getContext('webgl2') || c.getContext('webgl'));
+		} catch (e) {
+			return false;
+		}
+	};
+
+	if (scenes.length && window.rw24 && window.rw24.scene3d && canRender3D()) {
+		const load = () => import(window.rw24.scene3d)
+			.then((m) => scenes.forEach((el) => m.mount(el, { still: reduceMotion })))
+			.catch(() => {}); // Ohne Szene bleibt der CSS-Hintergrund - kein Fehler für Besucher.
+
+		if ('requestIdleCallback' in window) {
+			window.requestIdleCallback(load, { timeout: 2500 });
+		} else {
+			window.setTimeout(load, 1200);
+		}
+	}
+
+	/* ------------------------------------------------------------------
+	 * Überschriften Wort für Wort in 3D aufbauen
+	 * Der Text bleibt ein zusammenhängender Satz für Screenreader; die
+	 * Wörter stecken nur in Spans für die Animation.
+	 * ---------------------------------------------------------------- */
+	doc.querySelectorAll('.split-words').forEach((el) => {
+		if (reduceMotion) {
+			el.classList.add('is-split', 'is-in');
+			return;
+		}
+
+		const words = el.textContent.trim().split(/\s+/);
+		el.setAttribute('aria-label', el.textContent.trim());
+		el.textContent = '';
+
+		words.forEach((word, i) => {
+			const outer = doc.createElement('span');
+			outer.className = 'w';
+			outer.setAttribute('aria-hidden', 'true');
+			const inner = doc.createElement('span');
+			inner.textContent = word;
+			inner.style.setProperty('--i', String(i));
+			outer.appendChild(inner);
+			el.appendChild(outer);
+			if (i < words.length - 1) {
+				el.appendChild(doc.createTextNode(' '));
+			}
+		});
+
+		el.classList.add('is-split');
+		requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-in')));
+	});
+
+	/* ------------------------------------------------------------------
+	 * Karten kippen zur Maus, mit Lichtreflex
+	 * Nur mit echter Maus - auf Touch-Geräten wäre es nur störend.
+	 * ---------------------------------------------------------------- */
+	if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+		doc.querySelectorAll('.card, .citycard, .process__step').forEach((card) => {
+			let raf = 0;
+
+			card.addEventListener('pointermove', (e) => {
+				cancelAnimationFrame(raf);
+				raf = requestAnimationFrame(() => {
+					const r = card.getBoundingClientRect();
+					const x = (e.clientX - r.left) / r.width;
+					const y = (e.clientY - r.top) / r.height;
+					card.style.setProperty('--rx', `${((0.5 - y) * 9).toFixed(2)}deg`);
+					card.style.setProperty('--ry', `${((x - 0.5) * 11).toFixed(2)}deg`);
+					card.style.setProperty('--gx', `${(x * 100).toFixed(1)}%`);
+					card.style.setProperty('--gy', `${(y * 100).toFixed(1)}%`);
+					card.classList.add('is-tilting');
+				});
+			});
+
+			card.addEventListener('pointerleave', () => {
+				cancelAnimationFrame(raf);
+				card.classList.remove('is-tilting');
+				card.style.removeProperty('--rx');
+				card.style.removeProperty('--ry');
+			});
+		});
+	}
+
+	/* ------------------------------------------------------------------
+	 * Anfrageformular: eine Frage pro Schritt
+	 * ---------------------------------------------------------------- */
+	// Texte kommen übersetzbar aus functions.php (rw24_assets).
+	const i18n = Object.assign(
+		{
+			required: 'Bitte wählen Sie eine Antwort.',
+			zip: 'Bitte geben Sie eine fünfstellige Postleitzahl ein.',
+			name: 'Bitte geben Sie Ihren Namen ein.',
+			email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+			consent: 'Bitte bestätigen Sie die Einwilligung.',
+			status: 'Frage %1$d von %2$d',
+		},
+		window.rw24i18n || {}
+	);
+
+	const messages = {
+		...i18n,
+		status: (n, total) => i18n.status.replace('%1$d', n).replace('%2$d', total),
+	};
+
+	doc.querySelectorAll('[data-qf]').forEach((form) => {
+		const steps = Array.from(form.querySelectorAll('.qf__step'));
+		const back = form.querySelector('.qf__back');
+		const next = form.querySelector('.qf__next');
+		const submit = form.querySelector('.qf__submit');
+		const status = form.querySelector('.qf__status');
+		const total = steps.length;
+		let current = 0;
+
+		if (!total) {
+			return;
+		}
+
+		// Eigene Prüfung pro Schritt statt der Browser-Blasen.
+		form.noValidate = true;
+
+		const clearError = (step) => {
+			step.querySelectorAll('.qf__error').forEach((el) => el.remove());
+			step.querySelectorAll('.is-invalid').forEach((el) => {
+				el.classList.remove('is-invalid');
+				el.removeAttribute('aria-invalid');
+			});
+		};
+
+		const showError = (step, field, text) => {
+			const p = doc.createElement('p');
+			p.className = 'qf__error';
+			p.id = `${field.id || field.name}-error`;
+			p.setAttribute('role', 'alert');
+			p.textContent = text;
+
+			field.classList.add('is-invalid');
+			field.setAttribute('aria-invalid', 'true');
+			field.setAttribute('aria-describedby', p.id);
+
+			const anchor = field.closest('.qf__options, .qf__field, .qf__consent') || field;
+			anchor.after(p);
+			field.focus({ preventScroll: false });
+		};
+
+		// Gibt true zurück, wenn der Schritt vollständig ist.
+		const validate = (step) => {
+			clearError(step);
+
+			const radios = step.querySelector('input[type="radio"]');
+			if (radios && !step.querySelector('input[type="radio"]:checked')) {
+				showError(step, radios, messages.required);
+				return false;
+			}
+
+			for (const field of step.querySelectorAll('input:not([type="radio"]):not([type="hidden"]), textarea')) {
+				const value = field.type === 'checkbox' ? field.checked : field.value.trim();
+
+				if (field.name === 'zip' && !/^\d{5}$/.test(String(value))) {
+					showError(step, field, messages.zip);
+					return false;
+				}
+
+				if (field.name === 'name' && String(value).length < 2) {
+					showError(step, field, messages.name);
+					return false;
+				}
+
+				if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(value))) {
+					showError(step, field, messages.email);
+					return false;
+				}
+
+				if (field.type === 'checkbox' && field.required && !value) {
+					showError(step, field, messages.consent);
+					return false;
+				}
+			}
+
+			return true;
+		};
+
+		const show = (index, direction = 1, focus = true) => {
+			current = Math.max(0, Math.min(total - 1, index));
+
+			steps.forEach((step, i) => {
+				step.classList.toggle('is-active', i === current);
+				step.classList.toggle('is-back', i === current && direction < 0);
+				step.disabled = false;
+			});
+
+			back.hidden = current === 0;
+			next.hidden = current === total - 1;
+			submit.hidden = current !== total - 1;
+
+			form.style.setProperty('--progress', `${((current + 1) / total) * 100}%`);
+
+			if (status) {
+				status.textContent = messages.status(current + 1, total);
+			}
+
+			if (focus) {
+				const target = steps[current].querySelector('input:not([type="hidden"]), textarea');
+				target?.focus({ preventScroll: true });
+
+				// Auf kleinen Bildschirmen den Formularkopf wieder in Sicht holen.
+				const top = form.getBoundingClientRect().top;
+				if (top < 0 || top > window.innerHeight * 0.6) {
+					form.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+				}
+			}
+		};
+
+		next.addEventListener('click', () => {
+			if (validate(steps[current])) {
+				show(current + 1, 1);
+			}
+		});
+
+		back.addEventListener('click', () => show(current - 1, -1));
+
+		// Auswahl getroffen? Direkt zur nächsten Frage - spart einen Klick.
+		form.addEventListener('change', (e) => {
+			const input = e.target;
+			if (input.type !== 'radio') {
+				return;
+			}
+
+			clearError(steps[current]);
+
+			// Bei "Notfall" kurz stehen bleiben, damit der Telefon-Hinweis gelesen wird.
+			if (input.value === 'notfall') {
+				return;
+			}
+
+			if (current < total - 1) {
+				window.setTimeout(() => show(current + 1, 1), reduceMotion ? 0 : 220);
+			}
+		});
+
+		// Enter in einem Textfeld = Weiter statt Absenden.
+		form.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter' && e.target.tagName === 'INPUT' && current < total - 1) {
+				e.preventDefault();
+				next.click();
+			}
+		});
+
+		form.addEventListener('submit', (e) => {
+			// Alle Schritte prüfen; beim ersten Fehler dorthin springen.
+			for (let i = 0; i < total; i++) {
+				if (!validate(steps[i])) {
+					e.preventDefault();
+					show(i, -1, false);
+					validate(steps[i]);
+					return;
+				}
+			}
+
+			submit.disabled = true;
+			submit.setAttribute('aria-busy', 'true');
+		});
+
+		// Bei vorausgefüllter Leistung (Leistungs- und Stadtseiten) mit Frage 2 starten.
+		const preset = steps[0].querySelector('input[type="radio"]:checked');
+		show(preset ? 1 : 0, 1, false);
+
+		// Nach Zurück-Navigation aus dem Cache (bfcache) Button wieder freigeben.
+		window.addEventListener('pageshow', () => {
+			submit.disabled = false;
+			submit.removeAttribute('aria-busy');
+		});
+	});
+
+	/* ------------------------------------------------------------------
+	 * "Anfrage in 60 Sekunden" im Leistungs-Hero: zum Formular springen
+	 * und die erste offene Frage fokussieren.
+	 * ---------------------------------------------------------------- */
+	doc.querySelectorAll('.hero__jump').forEach((link) => {
+		link.addEventListener('click', (e) => {
+			const target = doc.querySelector(link.getAttribute('href'));
+			if (!target) {
+				return;
+			}
+
+			e.preventDefault();
+			target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+			target.querySelector('.qf__step.is-active input:not([type="hidden"])')?.focus({ preventScroll: true });
+		});
+	});
+})();

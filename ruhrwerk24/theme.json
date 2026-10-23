@@ -1,0 +1,38 @@
+{
+	"$schema": "https://schemas.wp.org/wp/6.4/theme.json",
+	"version": 2,
+	"settings": {
+		"appearanceTools": false,
+		"color": {
+			"custom": false,
+			"customGradient": false,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{ "slug": "navy", "name": "Navy", "color": "#0A2342" },
+				{ "slug": "accent", "name": "Orange", "color": "#F4651A" },
+				{ "slug": "emergency", "name": "Notdienst-Rot", "color": "#D7263D" },
+				{ "slug": "ink", "name": "Text dunkel", "color": "#142033" },
+				{ "slug": "grey", "name": "Hellgrau", "color": "#F4F6F9" },
+				{ "slug": "white", "name": "Weiß", "color": "#FFFFFF" }
+			]
+		},
+		"typography": {
+			"customFontSize": false,
+			"dropCap": false,
+			"defaultFontSizes": false,
+			"fontSizes": [
+				{ "slug": "small", "name": "Klein", "size": "0.9375rem" },
+				{ "slug": "normal", "name": "Normal", "size": "1.0625rem" },
+				{ "slug": "large", "name": "Groß", "size": "1.3125rem" }
+			]
+		},
+		"spacing": {
+			"customSpacingSize": false
+		},
+		"layout": {
+			"contentSize": "760px",
+			"wideSize": "1100px"
+		}
+	}
+}
