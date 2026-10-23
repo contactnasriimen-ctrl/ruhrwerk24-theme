@@ -209,7 +209,54 @@ function buildNetwork(ctx, variant) {
 		world.scale.setScalar(portrait ? 0.4 : cfg.scale);
 	};
 
+	// Funkenflug: orange Funken steigen auf, dazwischen kühler Lichtstaub.
+	const sparkCount = small ? 120 : variant === 'page' ? 160 : 320;
+	const sparkPos = new Float32Array(sparkCount * 3);
+	const sparkVel = new Float32Array(sparkCount);
+	for (let i = 0; i < sparkCount; i++) {
+		sparkPos[i * 3] = -6 + Math.random() * 22;
+		sparkPos[i * 3 + 1] = -8 + Math.random() * 16;
+		sparkPos[i * 3 + 2] = -8 + Math.random() * 12;
+		sparkVel[i] = 0.4 + Math.random() * 1.1;
+	}
+	const sparkGeo = new THREE.BufferGeometry();
+	sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPos, 3));
+	const dot = (() => {
+		const c = document.createElement('canvas');
+		c.width = c.height = 64;
+		const g = c.getContext('2d');
+		const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+		grad.addColorStop(0, 'rgba(255,255,255,1)');
+		grad.addColorStop(0.3, 'rgba(255,255,255,.6)');
+		grad.addColorStop(1, 'rgba(255,255,255,0)');
+		g.fillStyle = grad;
+		g.fillRect(0, 0, 64, 64);
+		return new THREE.CanvasTexture(c);
+	})();
+	const sparks = new THREE.Points(sparkGeo, new THREE.PointsMaterial({ color: accent.clone().lerp(new THREE.Color('#ffd9b0'), 0.3), size: 0.22, map: dot, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false }));
+	world.add(sparks);
+
+	const dustGeo = new THREE.BufferGeometry();
+	const dustPos = new Float32Array((small ? 80 : 220) * 3).map((_, i) => (i % 3 === 0 ? -8 + Math.random() * 26 : i % 3 === 1 ? -8 + Math.random() * 16 : -12 + Math.random() * 14));
+	dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+	const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0x9cc4ff, size: 0.12, map: dot, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
+	world.add(dust);
+
 	return (dt, t) => {
+		// Funken steigen auf, flackern seitlich und starten unten neu.
+		const p = sparkGeo.attributes.position.array;
+		for (let i = 0; i < sparkCount; i++) {
+			p[i * 3 + 1] += sparkVel[i] * dt;
+			p[i * 3] += Math.sin(t * 2 + i) * dt * 0.25;
+			if (p[i * 3 + 1] > 8) {
+				p[i * 3 + 1] = -8;
+			}
+		}
+		sparkGeo.attributes.position.needsUpdate = true;
+		sparks.material.opacity = 0.9 * easeOut((t - 1.2) / 1.5);
+		dust.rotation.y = t * 0.02;
+		dust.position.y = Math.sin(t * 0.4) * 0.3;
+
 		growers.forEach((g) => {
 			if (g.geo) {
 				const p = easeOut((t - g.delay) / 1.8);
@@ -541,9 +588,10 @@ export function mount(host, opts = {}) {
 		if (isNetwork) {
 			// Hero-Scroll: Kamera fährt zurück und nach unten.
 			const s = Math.max(0, ctx.scroll - 0.5) * 2;
-			camera.position.z = baseZ + s * 4;
-			camera.position.y = baseY - s * 1.5;
-			camera.lookAt(0, camera.position.y, 0);
+			camera.position.z = baseZ + s * 4 + Math.sin(elapsed * 0.18) * 0.8;
+			camera.position.y = baseY - s * 1.5 + Math.sin(elapsed * 0.23) * 0.35;
+			camera.position.x = Math.sin(elapsed * 0.11) * 1.1;
+			camera.lookAt(camera.position.x * 0.4, camera.position.y, 0);
 		}
 
 		renderer.render(scene, camera);

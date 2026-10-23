@@ -20,6 +20,8 @@ defined( 'ABSPATH' ) || exit;
 <?php wp_body_open(); ?>
 
 <div class="scrollbar" aria-hidden="true"><span></span></div>
+<?php // Feste Ebene für den 3D-Hintergrund (assets/js/bg3d.js). ?>
+<div class="bg3d" aria-hidden="true"></div>
 
 <a class="skip" href="#inhalt"><?php esc_html_e( 'Zum Inhalt springen', 'ruhrwerk24' ); ?></a>
 

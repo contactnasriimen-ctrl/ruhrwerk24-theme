@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'RW24_VERSION', '2.2.0' );
+define( 'RW24_VERSION', '2.3.0' );
 define( 'RW24_DIR', get_template_directory() );
 define( 'RW24_URI', get_template_directory_uri() );
 
@@ -114,10 +114,15 @@ function rw24_assets(): void {
 		)
 	);
 
-	// Adresse der 3D-Szene. main.js lädt sie erst nach dem Seitenaufbau nach.
+	// Adressen der 3D-Szenen. main.js lädt sie erst nach dem Seitenaufbau nach.
 	wp_add_inline_script(
 		'rw24-main',
-		'window.rw24=' . wp_json_encode( array( 'scene3d' => add_query_arg( 'ver', RW24_VERSION, RW24_URI . '/assets/js/hero3d.js' ) ) ) . ';',
+		'window.rw24=' . wp_json_encode(
+			array(
+				'scene3d' => add_query_arg( 'ver', RW24_VERSION, RW24_URI . '/assets/js/hero3d.js' ),
+				'bg3d'    => add_query_arg( 'ver', RW24_VERSION, RW24_URI . '/assets/js/bg3d.js' ),
+			)
+		) . ';',
 		'before'
 	);
 

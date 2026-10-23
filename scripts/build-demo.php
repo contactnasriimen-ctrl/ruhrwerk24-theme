@@ -74,6 +74,7 @@ $pages = array_values( array_unique( $pages ) );
 $assets = array(
 	// Werden per JavaScript nachgeladen und stehen in keinem HTML-Tag.
 	'/wp-content/themes/ruhrwerk24/assets/js/hero3d.js',
+	'/wp-content/themes/ruhrwerk24/assets/js/bg3d.js',
 	'/wp-content/themes/ruhrwerk24/assets/vendor/three/build/three.module.min.js',
 	'/wp-content/themes/ruhrwerk24/assets/vendor/three/jsm/environments/RoomEnvironment.js',
 	'/wp-content/themes/ruhrwerk24/assets/vendor/three/LICENSE',

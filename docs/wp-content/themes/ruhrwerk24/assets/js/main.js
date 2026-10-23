@@ -172,6 +172,21 @@
 	const narrow = window.matchMedia('(max-width: 960px)').matches;
 	const wanted = Array.from(scenes).filter((el) => !(narrow && el.hasAttribute('data-scene3d-desktop')));
 
+	// 3D-Hintergrund der ganzen Seite (bg3d.js) - feste Ebene hinter den
+	// hellen Abschnitten. Läuft auch auf dem Handy, dort mit weniger Teilen.
+	const bgHost = doc.querySelector('.bg3d');
+	if (bgHost && window.rw24 && window.rw24.bg3d && canRender3D()) {
+		const loadBg = () => import(window.rw24.bg3d)
+			.then((m) => m.mountBackground(bgHost, { still: reduceMotion }))
+			.catch(() => {});
+
+		if ('requestIdleCallback' in window) {
+			window.requestIdleCallback(loadBg, { timeout: 3000 });
+		} else {
+			window.setTimeout(loadBg, 1500);
+		}
+	}
+
 	if (wanted.length && window.rw24 && window.rw24.scene3d && canRender3D()) {
 		const load = () => import(window.rw24.scene3d)
 			.then((m) => wanted.forEach((el) => m.mount(el, { still: reduceMotion })))
