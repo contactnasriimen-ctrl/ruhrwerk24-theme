@@ -19,6 +19,8 @@ defined( 'ABSPATH' ) || exit;
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
+<div class="scrollbar" aria-hidden="true"><span></span></div>
+
 <a class="skip" href="#inhalt"><?php esc_html_e( 'Zum Inhalt springen', 'ruhrwerk24' ); ?></a>
 
 <div class="topbar">

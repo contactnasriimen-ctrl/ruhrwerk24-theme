@@ -84,6 +84,8 @@ get_header();
 		</div>
 	</section>
 
+	<?php get_template_part( 'template-parts/region', null, array( 'city' => $rw_city ) ); ?>
+
 	<?php get_template_part( 'template-parts/emergency' ); ?>
 
 	<?php

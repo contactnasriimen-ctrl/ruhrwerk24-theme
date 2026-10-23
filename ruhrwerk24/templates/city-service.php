@@ -78,6 +78,8 @@ while ( have_posts() ) :
 
 		<?php get_template_part( 'template-parts/service-body', null, array( 'intro' => $rw_intro, 'facts' => $rw_facts ) ); ?>
 
+		<?php get_template_part( 'template-parts/region', null, array( 'city' => $rw_city ) ); ?>
+
 		<?php
 		get_template_part(
 			'template-parts/faq',

@@ -28,6 +28,12 @@ Theme für Ruhrwerk24 – Handwerk, Sanierung und Notdienst in NRW.
   ohne Hintergrundfoto und auf Leistungsseiten ohne Beitragsbild.
 * 3D-Oberfläche: kippende Karten mit Lichtreflex, Überschriften Wort für
   Wort, Einblenden in 3D, Knöpfe mit Tiefe.
+* Seit 2.2: Ventil-Szene im Abschluss-Band, Tropfen-Szene im
+  Notdienst-Band, Rohrnetz in allen Seitenköpfen, Laufband, Bento-Raster,
+  3D-Zahlen, Kartenstapel "Über uns" (Text im Customizer), allgemeine FAQ,
+  regionale Absätze auf Stadtseiten, ausführlichere Leistungstexte.
+  Unveränderte Leistungstexte werden beim Update aufgefrischt, bearbeitete
+  bleiben unangetastet.
 * Anfrageformular mit acht Schritten, ohne Plugin, ohne Captcha
   (Honeypot, signierter Zeitstempel, Limit pro IP). Funktioniert auch
   ohne JavaScript.

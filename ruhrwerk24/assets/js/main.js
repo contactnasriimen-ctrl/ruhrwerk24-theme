@@ -113,6 +113,9 @@
 				const p = Math.min(1, (now - start) / duration);
 				const eased = 1 - Math.pow(1 - p, 3);
 				el.textContent = String(Math.round(target * eased));
+				if (el.dataset.text !== undefined) {
+					el.dataset.text = el.textContent; // Relief-Ebenen der 3D-Ziffern mitziehen
+				}
 
 				if (p < 1) {
 					requestAnimationFrame(tick);
@@ -133,6 +136,9 @@
 
 		counters.forEach((el) => {
 			el.textContent = '0';
+			if (el.dataset.text !== undefined) {
+				el.dataset.text = '0';
+			}
 			co.observe(el);
 		});
 	}
@@ -161,9 +167,14 @@
 		}
 	};
 
-	if (scenes.length && window.rw24 && window.rw24.scene3d && canRender3D()) {
+	// Nebenszenen (Ventil, Tropfen) nur auf großen Bildschirmen - auf dem
+	// Handy reicht eine Szene im Seitenkopf, das schont Akku und Grafikchip.
+	const narrow = window.matchMedia('(max-width: 960px)').matches;
+	const wanted = Array.from(scenes).filter((el) => !(narrow && el.hasAttribute('data-scene3d-desktop')));
+
+	if (wanted.length && window.rw24 && window.rw24.scene3d && canRender3D()) {
 		const load = () => import(window.rw24.scene3d)
-			.then((m) => scenes.forEach((el) => m.mount(el, { still: reduceMotion })))
+			.then((m) => wanted.forEach((el) => m.mount(el, { still: reduceMotion })))
 			.catch(() => {}); // Ohne Szene bleibt der CSS-Hintergrund - kein Fehler für Besucher.
 
 		if ('requestIdleCallback' in window) {
@@ -178,8 +189,23 @@
 	 * Der Text bleibt ein zusammenhängender Satz für Screenreader; die
 	 * Wörter stecken nur in Spans für die Animation.
 	 * ---------------------------------------------------------------- */
-	doc.querySelectorAll('.split-words').forEach((el) => {
-		if (reduceMotion) {
+	// Seitenköpfe sofort, Abschnittsüberschriften sobald sie ins Bild kommen.
+	const splitTargets = doc.querySelectorAll('.split-words, .head h2, .cta h2, .emergency__text h2, .about__text h2, .region h2');
+	const splitIO = 'IntersectionObserver' in window
+		? new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('is-in');
+					splitIO.unobserve(entry.target);
+				}
+			});
+		}, { rootMargin: '0px 0px -10% 0px' })
+		: null;
+
+	splitTargets.forEach((el) => {
+		el.classList.add('split-words');
+
+		if (reduceMotion || el.children.length) {
 			el.classList.add('is-split', 'is-in');
 			return;
 		}
@@ -203,8 +229,82 @@
 		});
 
 		el.classList.add('is-split');
-		requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-in')));
+
+		if (el.closest('.hero, .service-hero, .pagehead') || !splitIO) {
+			requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('is-in')));
+		} else {
+			splitIO.observe(el);
+		}
 	});
+
+	/* ------------------------------------------------------------------
+	 * Lesefortschritt oben am Rand
+	 * ---------------------------------------------------------------- */
+	const progressBar = doc.querySelector('.scrollbar span');
+
+	if (progressBar) {
+		let ticking = false;
+		const updateProgress = () => {
+			const max = doc.documentElement.scrollHeight - window.innerHeight;
+			progressBar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+			ticking = false;
+		};
+
+		window.addEventListener('scroll', () => {
+			if (!ticking) {
+				ticking = true;
+				requestAnimationFrame(updateProgress);
+			}
+		}, { passive: true });
+		updateProgress();
+	}
+
+	/* ------------------------------------------------------------------
+	 * Elemente, die dem Scrollen folgen (--p von 0 bis 1)
+	 * Kartenstapel "Über uns" fächert sich auf, Zahlen kippen ins Bild.
+	 * ---------------------------------------------------------------- */
+	const scrubbed = doc.querySelectorAll('.stack, .stats__list');
+
+	if (scrubbed.length && !reduceMotion) {
+		let pending = false;
+		const scrub = () => {
+			const vh = window.innerHeight;
+			scrubbed.forEach((el) => {
+				const r = el.getBoundingClientRect();
+				const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * 0.8)));
+				el.style.setProperty('--p', p.toFixed(3));
+			});
+			pending = false;
+		};
+
+		window.addEventListener('scroll', () => {
+			if (!pending) {
+				pending = true;
+				requestAnimationFrame(scrub);
+			}
+		}, { passive: true });
+		scrub();
+	} else {
+		scrubbed.forEach((el) => el.style.setProperty('--p', '1'));
+	}
+
+	/* ------------------------------------------------------------------
+	 * Magnetische Knöpfe: folgen dem Mauszeiger ein Stück
+	 * ---------------------------------------------------------------- */
+	if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+		doc.querySelectorAll('.hero .btn, .cta .btn, .emergency .btn, .header__cta').forEach((btn) => {
+			btn.addEventListener('pointermove', (e) => {
+				const r = btn.getBoundingClientRect();
+				const x = (e.clientX - r.left - r.width / 2) * 0.22;
+				const y = (e.clientY - r.top - r.height / 2) * 0.3;
+				btn.style.translate = `${x.toFixed(1)}px ${y.toFixed(1)}px`;
+			});
+
+			btn.addEventListener('pointerleave', () => {
+				btn.style.translate = '';
+			});
+		});
+	}
 
 	/* ------------------------------------------------------------------
 	 * Karten kippen zur Maus, mit Lichtreflex

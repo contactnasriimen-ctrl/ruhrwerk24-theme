@@ -88,13 +88,23 @@ $rw_hero_img = (int) get_theme_mod( 'rw_hero_image', 0 );
 
 	<?php get_template_part( 'template-parts/usp' ); ?>
 
+	<?php get_template_part( 'template-parts/marquee' ); ?>
+
 	<?php get_template_part( 'template-parts/service-groups' ); ?>
+
+	<?php get_template_part( 'template-parts/why' ); ?>
+
+	<?php get_template_part( 'template-parts/stats' ); ?>
+
+	<?php get_template_part( 'template-parts/about' ); ?>
 
 	<?php get_template_part( 'template-parts/process' ); ?>
 
 	<?php get_template_part( 'template-parts/emergency' ); ?>
 
 	<?php get_template_part( 'template-parts/areas-teaser', null, array( 'cities' => array_slice( rw24_cities(), 0, 16, true ) ) ); ?>
+
+	<?php get_template_part( 'template-parts/faq', null, array( 'items' => rw24_home_faq() ) ); ?>
 
 	<?php
 	// Inhalt der Startseite aus dem Editor (optional), z. B. Über-uns-Text.

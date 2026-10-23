@@ -134,10 +134,65 @@ function rw24_setup_services(): void {
 		update_post_meta( $id, '_rw_icon', $service['icon'] );
 		update_post_meta( $id, '_rw_features', implode( "\n", $service['features'] ) );
 		update_post_meta( $id, '_rw_faq', implode( "\n", $faq ) );
+		rw24_store_blueprint_hash( $id );
 	}
 
 	rw24_flush_service_cache();
 }
+
+/**
+ * Prüfsumme der Texte, wie das Theme sie angelegt hat.
+ *
+ * Solange sie zum aktuellen Inhalt passt, hat niemand den Text bearbeitet
+ * und ein Theme-Update darf ihn durch die neue Fassung ersetzen.
+ */
+function rw24_blueprint_fingerprint( int $id ): string {
+	return md5( get_post_field( 'post_content', $id ) . '|' . get_post_meta( $id, '_rw_features', true ) . '|' . get_post_meta( $id, '_rw_faq', true ) );
+}
+
+function rw24_store_blueprint_hash( int $id ): void {
+	update_post_meta( $id, '_rw_blueprint_hash', rw24_blueprint_fingerprint( $id ) );
+}
+
+/**
+ * Nach einem Theme-Update unveränderte Leistungstexte auffrischen.
+ *
+ * Läuft einmal pro Version im Backend. Bearbeitete Texte bleiben
+ * unangetastet - ebenso Leistungen ohne Prüfsumme (vor Version 2.2 angelegt).
+ */
+function rw24_upgrade_blueprint(): void {
+	if ( get_option( 'rw24_setup_version' ) === RW24_VERSION || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	foreach ( rw24_blueprint_services() as $slug => $service ) {
+		$post = get_page_by_path( $slug, OBJECT, 'rw_service' );
+		$hash = $post ? (string) get_post_meta( $post->ID, '_rw_blueprint_hash', true ) : '';
+
+		if ( ! $post || ! $hash || rw24_blueprint_fingerprint( $post->ID ) !== $hash ) {
+			continue;
+		}
+
+		$faq = array();
+		foreach ( $service['faq'] as $q => $a ) {
+			$faq[] = $q . ' | ' . $a;
+		}
+
+		wp_update_post( array( 'ID' => $post->ID, 'post_content' => $service['content'] ) );
+		update_post_meta( $post->ID, '_rw_features', implode( "\n", $service['features'] ) );
+		update_post_meta( $post->ID, '_rw_faq', implode( "\n", $faq ) );
+		rw24_store_blueprint_hash( $post->ID );
+	}
+
+	rw24_flush_service_cache();
+
+	// Nur bei bereits eingerichteten Seiten weiterzählen - sonst zeigt der
+	// Einrichtungs-Hinweis nicht mehr an.
+	if ( get_option( 'rw24_setup_version' ) ) {
+		update_option( 'rw24_setup_version', RW24_VERSION );
+	}
+}
+add_action( 'admin_init', 'rw24_upgrade_blueprint' );
 
 /**
  * Menü anlegen und einem Ort zuweisen, wenn dort noch keins sitzt.

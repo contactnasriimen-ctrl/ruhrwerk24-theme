@@ -44,6 +44,10 @@ function rw24_defaults(): array {
 		'rw_fact_3_value'    => '8',
 		'rw_fact_3_label'    => 'Gewerke, ein Ansprechpartner',
 
+		// Über uns.
+		'rw_about_title'     => 'Handwerk aus dem Ruhrgebiet – mit Anspruch an Sauberkeit und klare Preise.',
+		'rw_about_text'      => "Ruhrwerk24 ist entstanden, weil wir selbst erlebt haben, wie mühsam Handwerkersuche sein kann: drei Firmen für ein Bad, Termine, die platzen, und Rechnungen, die nicht zum Angebot passen.\n\nDeshalb arbeiten wir anders. Sie haben einen Ansprechpartner für alle Gewerke, bekommen einen Festpreis, bevor wir anfangen, und erfahren von uns, wenn sich etwas ändert. Unsere Monteure sind fest angestellt, geschult und mit moderner Technik unterwegs – von der Kanalkamera bis zur Wärmebildkamera.\n\nUnd weil Schäden selten zu Geschäftszeiten passieren, ist unser Notdienst rund um die Uhr erreichbar.",
+
 		// Notdienst.
 		'rw_em_title'        => 'Wasser steht, Heizung aus, Rohr geplatzt?',
 		'rw_em_text'         => 'Unser Notdienst ist rund um die Uhr erreichbar – auch an Wochenenden und Feiertagen. Ein Anruf genügt.',
@@ -168,6 +172,12 @@ function rw24_customize_register( WP_Customize_Manager $wp_customize ): void {
 		/* translators: %d: Nummer der Kennzahl. */
 		$add_text( 'rw24_hero', "rw_fact_{$n}_label", sprintf( __( 'Kennzahl %d – Beschriftung', 'ruhrwerk24' ), $n ) );
 	}
+
+	// Über uns.
+	$wp_customize->add_section( 'rw24_about', array( 'title' => __( 'Über uns (Startseite)', 'ruhrwerk24' ), 'panel' => 'rw24' ) );
+
+	$add_text( 'rw24_about', 'rw_about_title', __( 'Überschrift', 'ruhrwerk24' ) );
+	$add_text( 'rw24_about', 'rw_about_text', __( 'Text', 'ruhrwerk24' ), 'textarea', __( 'Leerzeile = neuer Absatz.', 'ruhrwerk24' ) );
 
 	// Notdienst.
 	$wp_customize->add_section( 'rw24_emergency', array( 'title' => __( 'Notdienst', 'ruhrwerk24' ), 'panel' => 'rw24' ) );

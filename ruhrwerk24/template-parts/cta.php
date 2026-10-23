@@ -19,6 +19,10 @@ $rw_title = $args['title'] ?? __( 'Sagen Sie uns, worum es geht.', 'ruhrwerk24' 
 			<h2><?php echo esc_html( $rw_title ); ?></h2>
 			<p><?php esc_html_e( 'Acht kurze Fragen, eine Minute Zeit. Sie bekommen eine ehrliche Einschätzung und einen Festpreis – bevor jemand anrückt.', 'ruhrwerk24' ); ?></p>
 		</div>
+		<div class="cta__stage" aria-hidden="true">
+			<?php // 3D: Absperrventil, dessen Handrad sich beim Scrollen dreht. ?>
+			<div class="scene3d scene3d--stage" data-scene3d="valve" data-scene3d-desktop></div>
+		</div>
 		<div class="cta__actions">
 			<a class="btn btn--primary btn--wide" href="<?php echo esc_url( rw24_form_page_url() ); ?>">
 				<?php esc_html_e( 'Anfrage in 60 Sekunden', 'ruhrwerk24' ); ?>

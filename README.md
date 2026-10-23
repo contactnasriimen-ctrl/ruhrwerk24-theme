@@ -12,7 +12,10 @@ Theme für einen Handwerks- und Notdienstbetrieb in NRW: Rohrreinigung, Haustech
 ## Funktionen
 
 - **3D-Seitenkopf** (Three.js, lokal eingebunden): Metallrohre mit Flanschen, die beim Laden „wachsen“, orangefarbene Strömung, schwebende Muttern; reagiert auf Maus und Scrollen. Wird erst nach dem Seitenaufbau geladen, pausiert außerhalb des Sichtbereichs und entfällt auf schwachen Geräten, bei Datensparmodus und bei „Bewegung reduzieren“.
-- **3D-Oberfläche:** Karten kippen zur Maus mit Lichtreflex, Überschriften bauen sich Wort für Wort auf, Abschnitte klappen beim Scrollen ins Bild, Knöpfe mit Tiefe.
+- **Weitere 3D-Szenen:** Absperrventil, dessen Handrad sich beim Scrollen dreht (Abschluss-Band), undichte Muffe mit fallenden Tropfen und Blaulicht (Notdienst-Band), leichtes Rohrnetz in jedem Seitenkopf. Nebenszenen nur auf großen Bildschirmen.
+- **3D-Oberfläche:** Karten kippen zur Maus mit Lichtreflex, Überschriften bauen sich Wort für Wort auf, Abschnitte klappen beim Scrollen ins Bild, plastische 3D-Ziffern, Kartenstapel, der sich beim Scrollen auffächert, Knöpfe mit Tiefe und Magnet-Effekt, leuchtender Rahmen um das Formular, Laufband, Lesefortschritt.
+- **Startseite:** Laufband, Bento-Raster „Warum Ruhrwerk24“, Zahlenband, Über uns (Text im Customizer), Ablauf mit Zeitleiste, Notdienst, Einsatzgebiete, allgemeine FAQ.
+- **Inhalte:** ausführliche Texte zu allen acht Leistungen; jede Stadtseite mit eigenem Absatz zur Region (Ruhrgebiet, Rheinland, Bergisches Land, Niederrhein, Münsterland). Theme-Updates frischen nur Texte auf, die niemand bearbeitet hat.
 - **Anfrageformular in acht Schritten** ohne Plugin und ohne Captcha (Honeypot, signierter Zeitstempel, Limit pro IP). Funktioniert auch ohne JavaScript.
 - **Anfragen im Backend:** Status, interne Notiz, CSV-Export, automatische Löschung nach X Monaten (DSGVO), Bestätigungsmail mit Anfragenummer.
 - **Stadtseiten ohne Datenbankeinträge:** `/rohrreinigung-essen/` und `/servicegebiete/essen/` für 27 Städte, mit eigenen Inhalten je Stadt und in der XML-Sitemap.

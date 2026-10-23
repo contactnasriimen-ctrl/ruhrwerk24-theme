@@ -35,6 +35,7 @@ $rw_emergency = 'emergency' === $rw_args['variant'];
 <section class="pagehead on-dark<?php echo $rw_emergency ? ' pagehead--emergency' : ''; ?>">
 	<div class="bg-anim" aria-hidden="true"><span></span><span></span><span></span></div>
 	<div class="bg-grid" aria-hidden="true"></div>
+	<div class="scene3d" data-scene3d="page" aria-hidden="true"></div>
 
 	<div class="container pagehead__inner">
 		<?php rw24_breadcrumbs(); ?>

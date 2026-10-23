@@ -2004,8 +2004,7 @@ a.chip:hover { border-color: var(--accent); background: var(--accent-soft); colo
 	.card.is-tilting::before,
 	.citycard.is-tilting::before { opacity: 1; }
 
-	.card__icon,
-	.process__icon { transform: translateZ(28px); transition: transform .5s var(--ease), background .3s, color .3s; }
+	.card__icon { transform: translateZ(28px); transition: transform .5s var(--ease), background .3s, color .3s; }
 	.card__title { transform: translateZ(18px); }
 	.card:hover .card__icon { transform: translateZ(40px) rotateY(-12deg); }
 
@@ -2094,3 +2093,493 @@ a.chip:hover { transform: translateY(-2px); box-shadow: 0 6px 14px -8px var(--ac
 	.section { padding-block: 1rem; }
 	.js .reveal { opacity: 1 !important; transform: none !important; }
 }
+
+/* ======================================================================
+   2.2 - Mehr Bewegung, mehr Tiefe
+   ====================================================================== */
+
+/* Lesefortschritt */
+.scrollbar {
+	position: fixed;
+	z-index: 300;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 3px;
+	pointer-events: none;
+}
+
+.scrollbar span {
+	display: block;
+	height: 100%;
+	background: linear-gradient(90deg, var(--accent-hi), var(--accent), var(--emergency));
+	transform: scaleX(0);
+	transform-origin: 0 50%;
+	box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.admin-bar .scrollbar { top: 32px; }
+
+/* Magnetische Knöpfe gleiten zurück */
+.btn { transition-property: background, border-color, color, transform, box-shadow, translate; }
+.btn:not(:hover) { transition-duration: .25s, .25s, .25s, .25s, .25s, .6s; }
+
+/* Laufband */
+.marquee {
+	overflow: hidden;
+	padding-block: 1.1rem;
+	border-bottom: 1px solid var(--line);
+	background: var(--white);
+	mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee__track {
+	display: flex;
+	width: max-content;
+}
+
+.marquee__list {
+	display: flex;
+	flex: none;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.marquee__list li {
+	display: inline-flex;
+	align-items: center;
+	gap: 1.6rem;
+	padding-right: 1.6rem;
+	font-size: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+	font-stretch: 75%;
+	font-weight: 800;
+	letter-spacing: -.01em;
+	text-transform: uppercase;
+	color: var(--navy);
+	white-space: nowrap;
+}
+
+.marquee__list li:nth-child(3n + 2) {
+	color: transparent;
+	-webkit-text-stroke: 1.5px var(--navy);
+}
+
+.marquee__sep .icon { width: 1rem; height: 1rem; color: var(--accent); fill: var(--accent); }
+
+@media (prefers-reduced-motion: no-preference) {
+	.marquee__track { animation: marquee 38s linear infinite; }
+	.marquee:hover .marquee__track { animation-play-state: paused; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.marquee { overflow-x: auto; }
+	.marquee__list[aria-hidden] { display: none; }
+}
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* Bento-Raster "Warum Ruhrwerk24" */
+.why { background: var(--grey); }
+
+.bento {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	grid-auto-rows: minmax(200px, auto);
+	gap: var(--s-m);
+	perspective: 1400px;
+}
+
+.bento__item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: var(--s-l) var(--s-m) var(--s-m);
+	border: 1px solid var(--line);
+	border-radius: var(--r-l);
+	background: var(--white);
+	overflow: hidden;
+	isolation: isolate;
+}
+
+.bento__item:nth-child(2),
+.bento__item:nth-child(5),
+.bento__item:nth-child(6) { grid-column: span 2; }
+
+.bento__item--lg {
+	grid-row: span 2;
+	grid-column: span 2;
+	border: 0;
+	background: radial-gradient(120% 90% at 100% 0%, var(--navy-lift), var(--navy) 50%, var(--navy-deep));
+	color: rgb(255 255 255 / .78);
+}
+
+.bento .bento__item--lg h3 { font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem); color: var(--white); max-width: 14ch; }
+.bento__item--lg p { font-size: var(--fs-l); max-width: 34rem; }
+.bento__item--lg .link-arrow { margin-top: auto; padding-top: var(--s-m); color: var(--accent-hi); }
+.bento__item--lg .bento__icon { width: 64px; height: 64px; background: var(--accent); color: var(--navy-deep); }
+
+/* Ringe als Wasserzeichen in der großen Kachel */
+.bento__item--lg::after {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	right: -60px;
+	bottom: -60px;
+	width: 280px;
+	height: 280px;
+	border: 42px solid rgb(255 255 255 / .04);
+	border-radius: 50%;
+	box-shadow: 0 0 0 42px rgb(255 255 255 / .025);
+}
+
+.bento__icon {
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	margin-bottom: var(--s-m);
+	border-radius: 14px;
+	background: var(--accent-soft);
+	color: var(--accent-ink);
+}
+
+.bento__item h3 { font-size: 1.3rem; }
+.bento__item p { margin: 0; font-size: var(--fs-s); }
+.bento__item:not(.bento__item--lg) p { color: var(--muted); }
+
+/* Lichtkante, die beim Überfahren um die Kachel läuft */
+.bento__item::before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	inset: 0;
+	padding: 1.5px;
+	border-radius: inherit;
+	background: conic-gradient(from var(--angle, 0deg), transparent 0 70%, var(--accent) 85%, transparent);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+	opacity: 0;
+	transition: opacity .4s;
+}
+
+.bento__item:hover::before { opacity: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+	.bento__item:hover::before { animation: spin-angle 2.4s linear infinite; }
+}
+
+@media (max-width: 960px) {
+	.bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.bento__item--lg { grid-row: auto; }
+}
+
+@media (max-width: 560px) {
+	.bento { grid-template-columns: 1fr; }
+	.bento__item,
+	.bento__item:nth-child(2),
+	.bento__item--lg { grid-column: auto; }
+}
+
+/* Drehbarer Winkel für umlaufende Lichtkanten */
+@property --angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
+
+@keyframes spin-angle { to { --angle: 360deg; } }
+
+/* Zahlenband mit plastischen Ziffern */
+.stats { padding-block: var(--s-xl); }
+
+.stats__list {
+	--p: 1;
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: var(--s-l);
+	margin: 0;
+	perspective: 900px;
+}
+
+@media (max-width: 860px) {
+	.stats__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.stats__item { text-align: center; }
+
+.stats__value {
+	position: relative;
+	display: inline-block;
+	font-size: clamp(3.5rem, 2.4rem + 4.5vw, 6.5rem);
+	font-stretch: 70%;
+	font-weight: 900;
+	line-height: 1;
+	color: var(--white);
+	font-variant-numeric: tabular-nums;
+	transform: rotateX(calc((1 - var(--p)) * 55deg));
+	transform-origin: 50% 100%;
+	/* Relief: gestaffelte Schatten in Markenorange */
+	text-shadow:
+		1px 1px 0 var(--accent-lo),
+		2px 2px 0 var(--accent-lo),
+		3px 3px 0 var(--accent-lo),
+		4px 4px 0 var(--accent-lo),
+		5px 5px 0 var(--accent-ink),
+		6px 6px 0 var(--accent-ink),
+		12px 16px 24px rgb(0 0 0 / .45);
+}
+
+/* Glanzlicht auf der Vorderseite */
+.stats__value::after {
+	content: attr(data-text);
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(170deg, rgb(255 255 255 / .9) 0%, rgb(255 255 255 / 0) 55%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	text-shadow: none;
+	pointer-events: none;
+}
+
+.stats__item dd { margin: 1rem 0 0; font-size: var(--fs-s); color: rgb(255 255 255 / .7); }
+
+/* Über uns mit 3D-Kartenstapel */
+.about__inner {
+	display: grid;
+	grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
+	gap: clamp(2rem, 1rem + 5vw, 6rem);
+	align-items: center;
+}
+
+@media (max-width: 960px) {
+	.about__inner { grid-template-columns: 1fr; }
+}
+
+.about__text p { color: var(--muted); }
+.about__list { margin-top: var(--s-m); }
+
+.stack {
+	--p: 1;
+	position: relative;
+	height: 420px;
+	perspective: 1200px;
+	transform-style: preserve-3d;
+}
+
+.stack__card {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	display: flex;
+	flex-direction: column;
+	gap: .4rem;
+	width: min(320px, 78vw);
+	padding: var(--s-m);
+	border-radius: var(--r-l);
+	background: linear-gradient(160deg, var(--navy-lift), var(--navy-deep));
+	color: rgb(255 255 255 / .7);
+	box-shadow: var(--shadow-l), inset 0 1px 0 rgb(255 255 255 / .12);
+	/* Gestapelt bei --p 0, aufgefächert bei --p 1 */
+	transform:
+		translate(-50%, -50%)
+		translate3d(calc((var(--n) - 1) * var(--spread, 70px) * var(--p)), calc((var(--n) - 1) * -26px * var(--p) - var(--n) * 8px), calc(var(--n) * -60px))
+		rotateY(calc(-18deg * var(--p)))
+		rotateX(calc(8deg * var(--p)))
+		rotateZ(calc((var(--n) - 1) * 5deg * var(--p)));
+	transition: transform .2s linear;
+}
+
+.stack__card:nth-child(1) { z-index: 3; background: linear-gradient(160deg, var(--accent-hi), var(--accent-lo)); color: rgb(6 22 41 / .78); }
+.stack__card:nth-child(2) { z-index: 2; }
+.stack__card:nth-child(3) { z-index: 1; }
+
+.stack__card strong { font-size: 1.6rem; font-stretch: 78%; line-height: 1.1; color: var(--white); }
+.stack__card:nth-child(1) strong { color: var(--navy-deep); }
+
+.stack__icon {
+	display: grid;
+	place-items: center;
+	width: 52px;
+	height: 52px;
+	margin-bottom: .6rem;
+	border-radius: 14px;
+	background: rgb(255 255 255 / .14);
+	color: var(--white);
+}
+
+.stack__card:nth-child(1) .stack__icon { background: var(--navy-deep); color: var(--accent); }
+
+.stack__num {
+	position: absolute;
+	top: var(--s-m);
+	right: var(--s-m);
+	font-size: 2.6rem;
+	font-stretch: 70%;
+	font-weight: 900;
+	line-height: 1;
+	color: rgb(255 255 255 / .16);
+}
+
+.stack__items { font-size: var(--fs-s); }
+
+@media (prefers-reduced-motion: no-preference) {
+	.stack__card { animation: stack-float 6s ease-in-out infinite; animation-delay: calc(var(--n) * -2s); }
+}
+
+@keyframes stack-float { 50% { translate: 0 -10px; } }
+
+@media (max-width: 960px) {
+	.stack { --spread: 26px; height: 340px; }
+	.stack__card { width: min(280px, 66vw); }
+}
+
+/* Ablauf: Verbindungslinie füllt sich, sobald die Schritte erscheinen */
+.process__list { position: relative; }
+
+@media (min-width: 861px) {
+	.process__list::before,
+	.process__list::after {
+		content: "";
+		position: absolute;
+		z-index: 0;
+		top: calc(var(--s-l) + 26px);
+		right: 16%;
+		left: 16%;
+		height: 3px;
+		border-radius: 3px;
+		background: var(--line);
+	}
+
+	.process__list::after {
+		background: linear-gradient(90deg, var(--accent), var(--accent-hi));
+		transform: scaleX(0);
+		transform-origin: 0 50%;
+		transition: transform 1.6s .3s var(--ease);
+	}
+
+	.process__list:has(.process__step.is-in)::after { transform: scaleX(1); }
+	.process__step { z-index: 1; }
+}
+
+/* Regionaler Absatz auf Stadtseiten */
+.region__inner {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: var(--s-l);
+	align-items: center;
+	padding: var(--s-l);
+	border: 1px solid var(--accent-line);
+	border-radius: var(--r-l);
+	background: linear-gradient(135deg, var(--accent-soft), var(--white) 60%);
+}
+
+.region__inner p { margin: 0; font-size: var(--fs-l); color: var(--text); max-width: 52rem; }
+
+.region__badge {
+	display: grid;
+	place-items: center;
+	align-content: center;
+	gap: .3rem;
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+	background: var(--navy);
+	color: var(--white);
+	font-size: var(--fs-xs);
+	font-weight: 700;
+	text-align: center;
+	box-shadow: 0 0 0 8px var(--accent-soft), var(--shadow);
+}
+
+.region__badge .icon { width: 28px; height: 28px; color: var(--accent); }
+
+@media (prefers-reduced-motion: no-preference) {
+	.region__badge { animation: badge-tilt 7s ease-in-out infinite; }
+}
+
+@keyframes badge-tilt {
+	0%, 100% { transform: perspective(400px) rotateY(-14deg); }
+	50% { transform: perspective(400px) rotateY(14deg); }
+}
+
+@media (max-width: 640px) {
+	.region__inner { grid-template-columns: 1fr; padding: var(--s-m); }
+	.region__badge { width: 90px; height: 90px; }
+}
+
+/* 3D-Bühnen in den Bändern */
+/* Ränder weich auslaufen lassen, damit Rohre nicht an der Bühnenkante abreißen. */
+.scene3d--stage { opacity: 1 !important; mask-image: radial-gradient(closest-side, #000 62%, transparent 100%) !important; }
+.cta__stage .scene3d--stage { mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent) !important; }
+
+.emergency__inner { grid-template-columns: 220px 1fr auto; }
+
+.emergency__stage {
+	position: relative;
+	display: grid;
+	place-items: center;
+	height: 220px;
+}
+
+.emergency__stage .scene3d { inset: -30px; }
+.emergency__icon { transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.emergency__stage:has(.scene3d.is-ready) .emergency__icon { opacity: 0; transform: scale(.6); }
+
+@media (max-width: 860px) {
+	.emergency__inner { grid-template-columns: 1fr; }
+	.emergency__stage { height: auto; place-items: start; }
+	.emergency__stage .scene3d { display: none; }
+}
+
+.cta__inner { grid-template-columns: minmax(0, 1.3fr) 280px auto; }
+
+.cta__stage {
+	position: relative;
+	height: 260px;
+}
+
+.cta__stage .scene3d { inset: -40px; }
+
+@media (max-width: 1100px) {
+	.cta__inner { grid-template-columns: minmax(0, 1.3fr) auto; }
+	.cta__stage { display: none; }
+}
+
+@media (max-width: 860px) {
+	.cta__inner { grid-template-columns: 1fr; }
+}
+
+/* Seitenköpfe der Unterseiten: Rohrnetz rechts, Text bleibt frei */
+.pagehead { min-height: 320px; }
+.pagehead .scene3d { mask-image: linear-gradient(90deg, transparent 40%, rgb(0 0 0 / .5) 60%, #000 85%); }
+
+@media (max-width: 960px) {
+	.pagehead .scene3d { opacity: .35; mask-image: linear-gradient(90deg, transparent 30%, #000 100%); }
+}
+
+/* Leuchtender Rahmen um das Formular im Seitenkopf */
+.hero__form::before {
+	content: "";
+	position: absolute;
+	z-index: 0;
+	inset: -2px;
+	border-radius: calc(var(--r-l) + 2px);
+	background: conic-gradient(from var(--angle, 0deg), transparent 0 40%, var(--accent) 55%, var(--accent-hi) 62%, transparent 75%);
+	filter: blur(6px);
+	opacity: .9;
+	pointer-events: none;
+}
+
+.hero__form .qf { z-index: 1; }
+
+@media (prefers-reduced-motion: no-preference) {
+	.hero__form::before { animation: spin-angle 6s linear infinite; }
+}
+
+/* Abschnittsüberschriften: Wörter klappen schneller nacheinander */
+.head h2.is-split .w > span,
+.cta h2.is-split .w > span { transition-delay: calc(var(--i, 0) * 55ms); }
