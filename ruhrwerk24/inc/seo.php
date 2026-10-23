@@ -156,10 +156,20 @@ function rw24_schema(): void {
 
 	$area = array();
 	foreach ( rw24_cities() as $city ) {
-		$area[] = array(
+		$entry = array(
 			'@type' => 'City',
 			'name'  => $city['name'],
 		);
+
+		if ( ! empty( $city['geo'] ) ) {
+			$entry['geo'] = array(
+				'@type'     => 'GeoCoordinates',
+				'latitude'  => $city['geo'][0],
+				'longitude' => $city['geo'][1],
+			);
+		}
+
+		$area[] = $entry;
 	}
 
 	$org = array(

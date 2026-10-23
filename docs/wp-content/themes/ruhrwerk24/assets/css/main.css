@@ -3103,3 +3103,242 @@ a.eyebrow,
 	/* Auf dem Handy fährt der Transporter schon im Seitenkopf. */
 	.panel--stage { display: none; }
 }
+
+/* ======================================================================
+   2.6 - Footer mit 3D-Karte, Lichtkante, Schriftzug und Fortschrittsring
+   ====================================================================== */
+
+.footer {
+	position: relative;
+	padding-top: 0;
+	background: radial-gradient(120% 70% at 80% 0%, #0f2b52 0%, var(--navy-deep) 55%, #030b16 100%);
+}
+
+/* Lichtkante oben: ein orangefarbener Lichtpunkt wandert entlang */
+.footer::before {
+	content: "";
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 2px;
+	background:
+		linear-gradient(90deg, transparent, var(--accent) 45%, #ffd2a8 50%, var(--accent) 55%, transparent) 0 0 / 40% 100% no-repeat,
+		linear-gradient(90deg, transparent, rgb(255 255 255 / .14), transparent);
+	box-shadow: 0 0 18px var(--accent-glow);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.footer::before { animation: edge-run 6s linear infinite; }
+}
+
+@keyframes edge-run {
+	from { background-position: -40% 0, 0 0; }
+	to { background-position: 140% 0, 0 0; }
+}
+
+.footer a:not(.btn) { color: rgb(255 255 255 / .7); }
+.footer a:not(.btn):hover { color: var(--white); }
+
+/* --- Oberer Teil: Karte und Aufruf ----------------------------------- */
+.footer__top {
+	position: relative;
+	min-height: 440px;
+	padding-block: clamp(3rem, 2rem + 4vw, 6rem);
+	border-bottom: 1px solid rgb(255 255 255 / .08);
+}
+
+.footer__map {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: min(62%, 900px);
+}
+
+.footer__map .scene3d {
+	inset: 0;
+	mask-image: linear-gradient(90deg, transparent 0%, #000 30%), linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent) !important;
+	mask-composite: intersect;
+}
+
+.footer__cta { position: relative; z-index: 1; }
+
+.footer__live {
+	display: inline-flex;
+	align-items: center;
+	gap: .55rem;
+	padding: .4rem .85rem;
+	border: 1px solid rgb(61 220 132 / .35);
+	border-radius: 99px;
+	background: rgb(61 220 132 / .08);
+	font-size: var(--fs-xs);
+	font-weight: 700;
+	color: #b7f3d0;
+}
+
+.footer__claim {
+	display: grid;
+	max-width: 15ch;
+	margin: var(--s-m) 0 var(--s-l);
+	font-size: clamp(2.2rem, 1.5rem + 3.2vw, 4.4rem);
+	font-stretch: 75%;
+	font-weight: 900;
+	line-height: 1;
+	letter-spacing: -.015em;
+	color: var(--white);
+}
+
+.footer__claim span { color: rgb(255 255 255 / .55); }
+
+.footer__claim em {
+	font-style: normal;
+	background: linear-gradient(90deg, var(--accent-hi), var(--accent), #ffd2a8, var(--accent-hi));
+	background-size: 300% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.footer__claim em { animation: shimmer 6s linear infinite; }
+}
+
+@keyframes shimmer { to { background-position: 300% 0; } }
+
+@media (max-width: 960px) {
+	.footer__top { min-height: 0; display: flex; flex-direction: column-reverse; }
+	.footer__map {
+		position: relative;
+		width: auto;
+		height: clamp(240px, 70vw, 380px);
+		margin-top: var(--s-l);
+	}
+	.footer__map .scene3d { mask-image: linear-gradient(180deg, transparent, #000 15%, #000 85%, transparent) !important; }
+}
+
+/* --- Spalten -------------------------------------------------------- */
+.footer__grid { padding-top: var(--s-xl); }
+
+.footer__grid ul:not(.footer__links) a {
+	position: relative;
+	display: inline-block;
+	transition: color var(--t), transform var(--t) var(--ease);
+}
+
+.footer__grid ul:not(.footer__links) a::after {
+	content: "";
+	position: absolute;
+	right: 0;
+	bottom: -2px;
+	left: 0;
+	height: 1px;
+	background: var(--accent);
+	transform: scaleX(0);
+	transform-origin: 0 50%;
+	transition: transform .35s var(--ease);
+}
+
+.footer__grid ul:not(.footer__links) a:hover { transform: translateX(4px); }
+.footer__grid ul:not(.footer__links) a:hover::after { transform: scaleX(1); }
+
+.footer__title a { color: var(--white) !important; }
+
+.footer__links .icon { filter: drop-shadow(0 0 6px var(--accent-glow)); }
+
+/* --- Riesiger Schriftzug -------------------------------------------- */
+.footer__mark {
+	position: relative;
+	margin: 0 0 -.12em;
+	font-size: clamp(4rem, 2rem + 13vw, 15rem);
+	font-stretch: 68%;
+	font-weight: 900;
+	line-height: .85;
+	letter-spacing: -.02em;
+	text-align: center;
+	white-space: nowrap;
+	color: transparent;
+	-webkit-text-stroke: 1px rgb(255 255 255 / .14);
+	background: radial-gradient(28% 120% at var(--mx, 50%) 50%, rgb(255 255 255 / .55), rgb(255 255 255 / .04) 60%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	transform: perspective(900px) rotateX(var(--tilt, 8deg));
+	transform-origin: 50% 100%;
+	transition: transform .6s var(--ease);
+	mask-image: linear-gradient(180deg, #000 30%, transparent 105%);
+	user-select: none;
+	pointer-events: none;
+}
+
+.footer__mark span {
+	background: linear-gradient(180deg, var(--accent-hi), var(--accent) 60%, transparent 110%);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-stroke: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.footer__mark:not([style*="--mx"]) { animation: mark-sweep 9s ease-in-out infinite; }
+}
+
+@keyframes mark-sweep {
+	0%, 100% { --mx: 15%; }
+	50% { --mx: 85%; }
+}
+
+@property --mx {
+	syntax: "<percentage>";
+	initial-value: 50%;
+	inherits: true;
+}
+
+/* --- Leiste unten mit "Nach oben" ---------------------------------- */
+.footer__bar { position: relative; z-index: 1; }
+
+.totop {
+	--scroll: 0;
+	position: relative;
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background: rgb(255 255 255 / .06);
+	color: var(--white) !important;
+	transition: background var(--t), transform var(--t) var(--ease);
+}
+
+.totop:hover { background: var(--accent); color: var(--navy-deep) !important; transform: translateY(-3px); }
+
+.totop__icon { width: 18px; height: 18px; transform: rotate(-90deg); }
+
+.totop__ring {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	transform: rotate(-90deg);
+	fill: none;
+	stroke: var(--accent);
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	stroke-dasharray: 100;
+	stroke-dashoffset: calc(100 - var(--scroll) * 100);
+	transition: stroke-dashoffset .2s linear;
+}
+
+@media (max-width: 900px) {
+	.footer__mark { font-size: 19vw; }
+	.footer__credit { margin-left: 0; }
+}
+
+/* Footer-Spalten auf großen Schirmen in einer Reihe: Marke + Gruppen + Städte */
+@media (min-width: 1101px) {
+	.footer__grid {
+		grid-template-columns: minmax(230px, 1.35fr) repeat(auto-fit, minmax(140px, 1fr));
+		gap: var(--s-l) var(--s-m);
+	}
+
+	.footer__brand { grid-column: auto; }
+}

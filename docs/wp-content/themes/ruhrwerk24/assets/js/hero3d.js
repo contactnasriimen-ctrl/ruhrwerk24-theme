@@ -833,6 +833,189 @@ function buildTruck(ctx) {
 	return step;
 }
 
+/**
+ * Leuchtende Netzkarte NRW für den Footer: jede Stadt ein Lichtpunkt an
+ * ihrer echten Position, Lichtbögen vom Firmensitz zu allen Städten, auf
+ * denen orangefarbene Impulse wandern, und ein Radarring um die Zentrale.
+ * Die Städte kommen als JSON aus footer.php (data-points).
+ */
+function buildNRW(ctx, host) {
+	const { world, scene, small, accent } = ctx;
+	let points = [];
+	try {
+		points = JSON.parse(host.dataset.points || '[]');
+	} catch (e) {
+		points = [];
+	}
+	if (!points.length) {
+		return () => {};
+	}
+
+	// Projektion: Grad -> Welteinheiten, Längengrade um den Breitengrad gestaucht.
+	const lat0 = points.reduce((s, p) => s + p.lat, 0) / points.length;
+	const lon0 = points.reduce((s, p) => s + p.lon, 0) / points.length;
+	const k = 9;
+	const project = (p) => new THREE.Vector3((p.lon - lon0) * Math.cos((lat0 * Math.PI) / 180) * k, 0, -(p.lat - lat0) * k);
+
+	const hubData = points.find((p) => p.hub) || points[0];
+	const hub = project(hubData);
+
+	const glowDot = canvasTexture(64, 64, (g) => {
+		const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+		grad.addColorStop(0, 'rgba(255,255,255,1)');
+		grad.addColorStop(0.35, 'rgba(255,255,255,.5)');
+		grad.addColorStop(1, 'rgba(255,255,255,0)');
+		g.fillStyle = grad;
+		g.fillRect(0, 0, 64, 64);
+	});
+
+	// Boden: feines Raster, das zum Rand hin ausläuft
+	const grid = canvasTexture(512, 512, (g, w, h) => {
+		g.clearRect(0, 0, w, h);
+		g.strokeStyle = 'rgba(140,180,255,.16)';
+		g.lineWidth = 1;
+		for (let i = 0; i <= w; i += 32) {
+			g.beginPath(); g.moveTo(i, 0); g.lineTo(i, h); g.stroke();
+			g.beginPath(); g.moveTo(0, i); g.lineTo(w, i); g.stroke();
+		}
+		const fade = g.createRadialGradient(w / 2, h / 2, w * 0.1, w / 2, h / 2, w / 2);
+		fade.addColorStop(0, 'rgba(0,0,0,0)');
+		fade.addColorStop(1, 'rgba(0,0,0,1)');
+		g.globalCompositeOperation = 'destination-out';
+		g.fillStyle = fade;
+		g.fillRect(0, 0, w, h);
+	});
+	const ground = new THREE.Mesh(new THREE.PlaneGeometry(24, 24), new THREE.MeshBasicMaterial({ map: grid, transparent: true, depthWrite: false }));
+	ground.rotation.x = -Math.PI / 2;
+	ground.position.y = -0.02;
+	world.add(ground);
+
+	// Städte: Lichtpunkt plus Lichtsäule
+	const nodeGeo = new THREE.SphereGeometry(0.09, 16, 12);
+	const nodeMat = new THREE.MeshBasicMaterial({ color: '#bcd6ff' });
+	const hubMat = new THREE.MeshBasicMaterial({ color: accent });
+	const pillarGeo = new THREE.CylinderGeometry(0.02, 0.02, 1, 8, 1, true);
+	pillarGeo.translate(0, 0.5, 0);
+	const pillarMat = new THREE.MeshBasicMaterial({ color: '#7fb0ff', transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false });
+	const pillars = [];
+
+	points.forEach((p, i) => {
+		const pos = project(p);
+		const isHub = p === hubData;
+		const node = new THREE.Mesh(nodeGeo, isHub ? hubMat : nodeMat);
+		node.position.copy(pos);
+		node.scale.setScalar(isHub ? 2 : 1);
+		world.add(node);
+
+		const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowDot, color: isHub ? accent : new THREE.Color('#8fb8ff'), transparent: true, opacity: isHub ? 0.9 : 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
+		halo.position.copy(pos);
+		halo.scale.setScalar(isHub ? 1.4 : 0.6);
+		world.add(halo);
+
+		const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+		pillar.position.copy(pos);
+		pillar.scale.y = isHub ? 1.6 : 0.4 + (i % 5) * 0.12;
+		world.add(pillar);
+		pillars.push({ pillar, base: pillar.scale.y, phase: i * 0.7 });
+	});
+
+	// Namen von Zentrale und den meistgefragten Städten
+	const label = (text, pos, strong) => {
+		const tex = canvasTexture(512, 96, (g, w, h) => {
+			g.clearRect(0, 0, w, h);
+			g.font = `${strong ? 800 : 600} ${strong ? 58 : 46}px Archivo, Arial, sans-serif`;
+			g.fillStyle = strong ? '#ffffff' : 'rgba(220,232,255,.85)';
+			g.textAlign = 'center';
+			g.textBaseline = 'middle';
+			g.fillText(text, w / 2, h / 2);
+		});
+		const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+		sprite.position.copy(pos).add(new THREE.Vector3(0, strong ? 1.25 : 0.55, 0));
+		sprite.scale.set(strong ? 2.6 : 1.9, strong ? 0.49 : 0.36, 1);
+		world.add(sprite);
+	};
+	// Nur Städte beschriften, die weit genug auseinanderliegen - sonst
+	// überlagern sich die Namen rund um die Zentrale.
+	label(hubData.n, hub, true);
+	const labelled = [hub];
+	const minGap = small ? 2.6 : 1.9;
+	points.forEach((p) => {
+		const pos = project(p);
+		if (p !== hubData && labelled.length < (small ? 5 : 9) && labelled.every((q) => q.distanceTo(pos) > minGap)) {
+			label(p.n, pos, false);
+			labelled.push(pos);
+		}
+	});
+
+	// Lichtbögen von der Zentrale zu allen Städten
+	const arcMat = new THREE.MeshBasicMaterial({ color: accent.clone().lerp(new THREE.Color('#ffd2a8'), 0.3), transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false });
+	const pulseMat = new THREE.SpriteMaterial({ map: glowDot, color: accent.clone().lerp(new THREE.Color('#fff1e0'), 0.4), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+	const arcs = [];
+
+	points.forEach((p, i) => {
+		if (p === hubData) {
+			return;
+		}
+		const end = project(p);
+		const dist = hub.distanceTo(end);
+		const mid = hub.clone().lerp(end, 0.5);
+		mid.y = 0.5 + dist * 0.28;
+		const curve = new THREE.QuadraticBezierCurve3(hub.clone(), mid, end);
+		world.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 40, 0.014, 5, false), arcMat));
+
+		const pulse = new THREE.Sprite(pulseMat);
+		pulse.scale.setScalar(0.32);
+		world.add(pulse);
+		arcs.push({ curve, pulse, phase: (i * 0.137) % 1, speed: 0.22 + (i % 4) * 0.04 });
+	});
+
+	// Radarringe um die Zentrale
+	const rings = [0, 1, 2].map((i) => {
+		const ring = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.36, 64), new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+		ring.rotation.x = -Math.PI / 2;
+		ring.position.copy(hub).setY(0.01);
+		world.add(ring);
+		return { ring, phase: i / 3 };
+	});
+
+	scene.fog = new THREE.Fog('#061629', 14, 30);
+
+	ctx.camera.fov = 38;
+	// Auf dem Handy näher heran, damit die Karte die Bühne füllt.
+	if (small) {
+		ctx.camera.position.set(0, 6.4, 7.4);
+	} else {
+		ctx.camera.position.set(0, 8.5, 10.5);
+	}
+	ctx.camera.lookAt(0, 0, 0.4);
+	ctx.camera.updateProjectionMatrix();
+
+	ctx.layout = (portrait) => {
+		world.scale.setScalar(portrait ? 0.8 : 1);
+	};
+
+	return (dt, t) => {
+		// Karte dreht sich langsam hin und her
+		world.rotation.y = Math.sin(t * 0.12) * 0.28;
+
+		arcs.forEach((a) => {
+			const u = (t * a.speed + a.phase) % 1;
+			a.pulse.position.copy(a.curve.getPoint(u));
+			a.pulse.material.opacity = Math.sin(u * Math.PI);
+		});
+
+		rings.forEach((r) => {
+			const u = (t * 0.45 + r.phase) % 1;
+			r.ring.scale.setScalar(1 + u * 9);
+			r.ring.material.opacity = 0.7 * (1 - u);
+		});
+
+		pillars.forEach((p) => {
+			p.pillar.scale.y = p.base * (0.85 + 0.15 * Math.sin(t * 2 + p.phase));
+		});
+	};
+}
+
 /* ----------------------------------------------------------------------
  * Einhängen
  * -------------------------------------------------------------------- */
@@ -904,13 +1087,15 @@ export function mount(host, opts = {}) {
 		update = buildDrops(ctx);
 	} else if (variant === 'truck') {
 		update = buildTruck(ctx);
+	} else if (variant === 'nrw') {
+		update = buildNRW(ctx, host);
 	} else {
 		update = buildNetwork(ctx, variant);
 	}
 
 	const baseZ = camera.position.z;
 	const baseY = camera.position.y;
-	const isNetwork = !['valve', 'drops', 'truck'].includes(variant);
+	const isNetwork = !['valve', 'drops', 'truck', 'nrw'].includes(variant);
 
 	const resize = () => {
 		const w = host.clientWidth;
@@ -958,7 +1143,9 @@ export function mount(host, opts = {}) {
 
 		pointer.x += (pointer.tx - pointer.x) * 0.04;
 		pointer.y += (pointer.ty - pointer.y) * 0.04;
-		world.rotation.y = pointer.x * (isNetwork ? 0.16 : variant === 'truck' ? 0.2 : 0.35) + Math.sin(elapsed * 0.15) * 0.04;
+		if (variant !== 'nrw') {
+			world.rotation.y = pointer.x * (isNetwork ? 0.16 : variant === 'truck' ? 0.2 : 0.35) + Math.sin(elapsed * 0.15) * 0.04;
+		}
 		world.rotation.x = baseRotX + pointer.y * 0.08 + (isNetwork ? 0.05 : 0);
 
 		if (isNetwork) {

@@ -30,43 +30,43 @@ function rw24_cities(): array {
 
 	$cities = array(
 		// Meistgefragt - erscheinen im Footer.
-		'essen'                => array( 'name' => 'Essen', 'region' => 'Ruhrgebiet', 'zip' => '45127', 'kreis' => '', 'parts' => array( 'Rüttenscheid', 'Altenessen', 'Steele', 'Kettwig', 'Borbeck', 'Werden' ) ),
-		'dortmund'             => array( 'name' => 'Dortmund', 'region' => 'Ruhrgebiet', 'zip' => '44135', 'kreis' => '', 'parts' => array( 'Innenstadt', 'Hörde', 'Aplerbeck', 'Hombruch', 'Brackel', 'Eving' ) ),
-		'bochum'               => array( 'name' => 'Bochum', 'region' => 'Ruhrgebiet', 'zip' => '44787', 'kreis' => '', 'parts' => array( 'Wattenscheid', 'Langendreer', 'Weitmar', 'Linden', 'Gerthe' ) ),
-		'duisburg'             => array( 'name' => 'Duisburg', 'region' => 'Ruhrgebiet', 'zip' => '47051', 'kreis' => '', 'parts' => array( 'Meiderich', 'Rheinhausen', 'Homberg', 'Hamborn', 'Walsum', 'Neudorf' ) ),
-		'gelsenkirchen'        => array( 'name' => 'Gelsenkirchen', 'region' => 'Ruhrgebiet', 'zip' => '45879', 'kreis' => '', 'parts' => array( 'Buer', 'Erle', 'Horst', 'Schalke', 'Ückendorf' ) ),
-		'oberhausen'           => array( 'name' => 'Oberhausen', 'region' => 'Ruhrgebiet', 'zip' => '46045', 'kreis' => '', 'parts' => array( 'Sterkrade', 'Osterfeld', 'Alstaden', 'Schmachtendorf' ) ),
-		'duesseldorf'          => array( 'name' => 'Düsseldorf', 'region' => 'Rheinland', 'zip' => '40213', 'kreis' => '', 'parts' => array( 'Bilk', 'Oberkassel', 'Benrath', 'Gerresheim', 'Pempelfort', 'Flingern' ) ),
-		'koeln'                => array( 'name' => 'Köln', 'region' => 'Rheinland', 'zip' => '50667', 'kreis' => '', 'parts' => array( 'Ehrenfeld', 'Nippes', 'Deutz', 'Sülz', 'Porz', 'Kalk' ) ),
+		'essen'                => array( 'name' => 'Essen', 'region' => 'Ruhrgebiet', 'zip' => '45127', 'kreis' => '', 'parts' => array( 'Rüttenscheid', 'Altenessen', 'Steele', 'Kettwig', 'Borbeck', 'Werden' ), 'geo' => array( 51.4556, 7.0116 ) ),
+		'dortmund'             => array( 'name' => 'Dortmund', 'region' => 'Ruhrgebiet', 'zip' => '44135', 'kreis' => '', 'parts' => array( 'Innenstadt', 'Hörde', 'Aplerbeck', 'Hombruch', 'Brackel', 'Eving' ), 'geo' => array( 51.5136, 7.4653 ) ),
+		'bochum'               => array( 'name' => 'Bochum', 'region' => 'Ruhrgebiet', 'zip' => '44787', 'kreis' => '', 'parts' => array( 'Wattenscheid', 'Langendreer', 'Weitmar', 'Linden', 'Gerthe' ), 'geo' => array( 51.4818, 7.2162 ) ),
+		'duisburg'             => array( 'name' => 'Duisburg', 'region' => 'Ruhrgebiet', 'zip' => '47051', 'kreis' => '', 'parts' => array( 'Meiderich', 'Rheinhausen', 'Homberg', 'Hamborn', 'Walsum', 'Neudorf' ), 'geo' => array( 51.4344, 6.7623 ) ),
+		'gelsenkirchen'        => array( 'name' => 'Gelsenkirchen', 'region' => 'Ruhrgebiet', 'zip' => '45879', 'kreis' => '', 'parts' => array( 'Buer', 'Erle', 'Horst', 'Schalke', 'Ückendorf' ), 'geo' => array( 51.5177, 7.0857 ) ),
+		'oberhausen'           => array( 'name' => 'Oberhausen', 'region' => 'Ruhrgebiet', 'zip' => '46045', 'kreis' => '', 'parts' => array( 'Sterkrade', 'Osterfeld', 'Alstaden', 'Schmachtendorf' ), 'geo' => array( 51.4963, 6.8638 ) ),
+		'duesseldorf'          => array( 'name' => 'Düsseldorf', 'region' => 'Rheinland', 'zip' => '40213', 'kreis' => '', 'parts' => array( 'Bilk', 'Oberkassel', 'Benrath', 'Gerresheim', 'Pempelfort', 'Flingern' ), 'geo' => array( 51.2277, 6.7735 ) ),
+		'koeln'                => array( 'name' => 'Köln', 'region' => 'Rheinland', 'zip' => '50667', 'kreis' => '', 'parts' => array( 'Ehrenfeld', 'Nippes', 'Deutz', 'Sülz', 'Porz', 'Kalk' ), 'geo' => array( 50.9375, 6.9603 ) ),
 
 		// Ruhrgebiet.
-		'muelheim-an-der-ruhr' => array( 'name' => 'Mülheim an der Ruhr', 'region' => 'Ruhrgebiet', 'zip' => '45468', 'kreis' => '', 'parts' => array( 'Saarn', 'Speldorf', 'Heißen', 'Dümpten', 'Styrum' ) ),
-		'herne'                => array( 'name' => 'Herne', 'region' => 'Ruhrgebiet', 'zip' => '44623', 'kreis' => '', 'parts' => array( 'Wanne-Eickel', 'Sodingen', 'Holsterhausen', 'Börnig' ) ),
-		'bottrop'              => array( 'name' => 'Bottrop', 'region' => 'Ruhrgebiet', 'zip' => '46236', 'kreis' => '', 'parts' => array( 'Kirchhellen', 'Fuhlenbrock', 'Eigen', 'Batenbrock' ) ),
-		'recklinghausen'       => array( 'name' => 'Recklinghausen', 'region' => 'Ruhrgebiet', 'zip' => '45657', 'kreis' => 'Recklinghausen', 'parts' => array( 'Suderwich', 'Hochlarmark', 'Speckhorn', 'Hillerheide' ) ),
-		'gladbeck'             => array( 'name' => 'Gladbeck', 'region' => 'Ruhrgebiet', 'zip' => '45964', 'kreis' => 'Recklinghausen', 'parts' => array( 'Brauck', 'Rentfort', 'Zweckel', 'Butendorf' ) ),
-		'castrop-rauxel'       => array( 'name' => 'Castrop-Rauxel', 'region' => 'Ruhrgebiet', 'zip' => '44575', 'kreis' => 'Recklinghausen', 'parts' => array( 'Ickern', 'Habinghorst', 'Henrichenburg', 'Schwerin' ) ),
-		'hagen'                => array( 'name' => 'Hagen', 'region' => 'Ruhrgebiet', 'zip' => '58095', 'kreis' => '', 'parts' => array( 'Hohenlimburg', 'Haspe', 'Boele', 'Eilpe' ) ),
-		'hamm'                 => array( 'name' => 'Hamm', 'region' => 'Ruhrgebiet', 'zip' => '59065', 'kreis' => '', 'parts' => array( 'Bockum-Hövel', 'Heessen', 'Rhynern', 'Pelkum' ) ),
-		'witten'               => array( 'name' => 'Witten', 'region' => 'Ruhrgebiet', 'zip' => '58452', 'kreis' => 'Ennepe-Ruhr-Kreis', 'parts' => array( 'Annen', 'Herbede', 'Heven', 'Bommern' ) ),
+		'muelheim-an-der-ruhr' => array( 'name' => 'Mülheim an der Ruhr', 'region' => 'Ruhrgebiet', 'zip' => '45468', 'kreis' => '', 'parts' => array( 'Saarn', 'Speldorf', 'Heißen', 'Dümpten', 'Styrum' ), 'geo' => array( 51.4275, 6.8825 ) ),
+		'herne'                => array( 'name' => 'Herne', 'region' => 'Ruhrgebiet', 'zip' => '44623', 'kreis' => '', 'parts' => array( 'Wanne-Eickel', 'Sodingen', 'Holsterhausen', 'Börnig' ), 'geo' => array( 51.538, 7.2257 ) ),
+		'bottrop'              => array( 'name' => 'Bottrop', 'region' => 'Ruhrgebiet', 'zip' => '46236', 'kreis' => '', 'parts' => array( 'Kirchhellen', 'Fuhlenbrock', 'Eigen', 'Batenbrock' ), 'geo' => array( 51.5236, 6.9285 ) ),
+		'recklinghausen'       => array( 'name' => 'Recklinghausen', 'region' => 'Ruhrgebiet', 'zip' => '45657', 'kreis' => 'Recklinghausen', 'parts' => array( 'Suderwich', 'Hochlarmark', 'Speckhorn', 'Hillerheide' ), 'geo' => array( 51.6141, 7.1979 ) ),
+		'gladbeck'             => array( 'name' => 'Gladbeck', 'region' => 'Ruhrgebiet', 'zip' => '45964', 'kreis' => 'Recklinghausen', 'parts' => array( 'Brauck', 'Rentfort', 'Zweckel', 'Butendorf' ), 'geo' => array( 51.5703, 6.9851 ) ),
+		'castrop-rauxel'       => array( 'name' => 'Castrop-Rauxel', 'region' => 'Ruhrgebiet', 'zip' => '44575', 'kreis' => 'Recklinghausen', 'parts' => array( 'Ickern', 'Habinghorst', 'Henrichenburg', 'Schwerin' ), 'geo' => array( 51.5559, 7.3106 ) ),
+		'hagen'                => array( 'name' => 'Hagen', 'region' => 'Ruhrgebiet', 'zip' => '58095', 'kreis' => '', 'parts' => array( 'Hohenlimburg', 'Haspe', 'Boele', 'Eilpe' ), 'geo' => array( 51.3671, 7.4633 ) ),
+		'hamm'                 => array( 'name' => 'Hamm', 'region' => 'Ruhrgebiet', 'zip' => '59065', 'kreis' => '', 'parts' => array( 'Bockum-Hövel', 'Heessen', 'Rhynern', 'Pelkum' ), 'geo' => array( 51.6739, 7.8159 ) ),
+		'witten'               => array( 'name' => 'Witten', 'region' => 'Ruhrgebiet', 'zip' => '58452', 'kreis' => 'Ennepe-Ruhr-Kreis', 'parts' => array( 'Annen', 'Herbede', 'Heven', 'Bommern' ), 'geo' => array( 51.4437, 7.3527 ) ),
 
 		// Rheinland.
-		'neuss'                => array( 'name' => 'Neuss', 'region' => 'Rheinland', 'zip' => '41460', 'kreis' => 'Rhein-Kreis Neuss', 'parts' => array( 'Holzheim', 'Norf', 'Grimlinghausen', 'Reuschenberg' ) ),
-		'krefeld'              => array( 'name' => 'Krefeld', 'region' => 'Rheinland', 'zip' => '47798', 'kreis' => '', 'parts' => array( 'Uerdingen', 'Fischeln', 'Hüls', 'Bockum' ) ),
-		'moenchengladbach'     => array( 'name' => 'Mönchengladbach', 'region' => 'Rheinland', 'zip' => '41061', 'kreis' => '', 'parts' => array( 'Rheydt', 'Odenkirchen', 'Neuwerk', 'Giesenkirchen' ) ),
-		'ratingen'             => array( 'name' => 'Ratingen', 'region' => 'Rheinland', 'zip' => '40878', 'kreis' => 'Mettmann', 'parts' => array( 'Lintorf', 'Hösel', 'Breitscheid', 'West' ) ),
+		'neuss'                => array( 'name' => 'Neuss', 'region' => 'Rheinland', 'zip' => '41460', 'kreis' => 'Rhein-Kreis Neuss', 'parts' => array( 'Holzheim', 'Norf', 'Grimlinghausen', 'Reuschenberg' ), 'geo' => array( 51.1981, 6.6914 ) ),
+		'krefeld'              => array( 'name' => 'Krefeld', 'region' => 'Rheinland', 'zip' => '47798', 'kreis' => '', 'parts' => array( 'Uerdingen', 'Fischeln', 'Hüls', 'Bockum' ), 'geo' => array( 51.3388, 6.5853 ) ),
+		'moenchengladbach'     => array( 'name' => 'Mönchengladbach', 'region' => 'Rheinland', 'zip' => '41061', 'kreis' => '', 'parts' => array( 'Rheydt', 'Odenkirchen', 'Neuwerk', 'Giesenkirchen' ), 'geo' => array( 51.1805, 6.4428 ) ),
+		'ratingen'             => array( 'name' => 'Ratingen', 'region' => 'Rheinland', 'zip' => '40878', 'kreis' => 'Mettmann', 'parts' => array( 'Lintorf', 'Hösel', 'Breitscheid', 'West' ), 'geo' => array( 51.2973, 6.8493 ) ),
 
 		// Bergisches Land.
-		'wuppertal'            => array( 'name' => 'Wuppertal', 'region' => 'Bergisches Land', 'zip' => '42103', 'kreis' => '', 'parts' => array( 'Elberfeld', 'Barmen', 'Vohwinkel', 'Ronsdorf', 'Cronenberg' ) ),
-		'solingen'             => array( 'name' => 'Solingen', 'region' => 'Bergisches Land', 'zip' => '42651', 'kreis' => '', 'parts' => array( 'Ohligs', 'Wald', 'Höhscheid', 'Gräfrath' ) ),
-		'remscheid'            => array( 'name' => 'Remscheid', 'region' => 'Bergisches Land', 'zip' => '42853', 'kreis' => '', 'parts' => array( 'Lennep', 'Lüttringhausen', 'Hasten' ) ),
+		'wuppertal'            => array( 'name' => 'Wuppertal', 'region' => 'Bergisches Land', 'zip' => '42103', 'kreis' => '', 'parts' => array( 'Elberfeld', 'Barmen', 'Vohwinkel', 'Ronsdorf', 'Cronenberg' ), 'geo' => array( 51.2562, 7.1508 ) ),
+		'solingen'             => array( 'name' => 'Solingen', 'region' => 'Bergisches Land', 'zip' => '42651', 'kreis' => '', 'parts' => array( 'Ohligs', 'Wald', 'Höhscheid', 'Gräfrath' ), 'geo' => array( 51.1652, 7.0671 ) ),
+		'remscheid'            => array( 'name' => 'Remscheid', 'region' => 'Bergisches Land', 'zip' => '42853', 'kreis' => '', 'parts' => array( 'Lennep', 'Lüttringhausen', 'Hasten' ), 'geo' => array( 51.1787, 7.1897 ) ),
 
 		// Niederrhein.
-		'moers'                => array( 'name' => 'Moers', 'region' => 'Niederrhein', 'zip' => '47441', 'kreis' => 'Wesel', 'parts' => array( 'Repelen', 'Kapellen', 'Asberg', 'Schwafheim' ) ),
-		'wesel'                => array( 'name' => 'Wesel', 'region' => 'Niederrhein', 'zip' => '46483', 'kreis' => 'Wesel', 'parts' => array( 'Büderich', 'Flüren', 'Blumenkamp', 'Obrighoven' ) ),
+		'moers'                => array( 'name' => 'Moers', 'region' => 'Niederrhein', 'zip' => '47441', 'kreis' => 'Wesel', 'parts' => array( 'Repelen', 'Kapellen', 'Asberg', 'Schwafheim' ), 'geo' => array( 51.4516, 6.6264 ) ),
+		'wesel'                => array( 'name' => 'Wesel', 'region' => 'Niederrhein', 'zip' => '46483', 'kreis' => 'Wesel', 'parts' => array( 'Büderich', 'Flüren', 'Blumenkamp', 'Obrighoven' ), 'geo' => array( 51.6585, 6.6177 ) ),
 
 		// Münsterland.
-		'muenster'             => array( 'name' => 'Münster', 'region' => 'Münsterland', 'zip' => '48143', 'kreis' => '', 'parts' => array( 'Hiltrup', 'Gievenbeck', 'Kinderhaus', 'Wolbeck' ) ),
+		'muenster'             => array( 'name' => 'Münster', 'region' => 'Münsterland', 'zip' => '48143', 'kreis' => '', 'parts' => array( 'Hiltrup', 'Gievenbeck', 'Kinderhaus', 'Wolbeck' ), 'geo' => array( 51.9607, 7.6261 ) ),
 	);
 
 	$cities = (array) apply_filters( 'rw24_cities', $cities );

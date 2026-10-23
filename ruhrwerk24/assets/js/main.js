@@ -316,12 +316,18 @@
 	 * Lesefortschritt oben am Rand
 	 * ---------------------------------------------------------------- */
 	const progressBar = doc.querySelector('.scrollbar span');
+	const toTop = doc.querySelector('.totop');
 
-	if (progressBar) {
+	if (progressBar || toTop) {
 		let ticking = false;
 		const updateProgress = () => {
 			const max = doc.documentElement.scrollHeight - window.innerHeight;
-			progressBar.style.transform = `scaleX(${max > 0 ? window.scrollY / max : 0})`;
+			const ratio = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+			if (progressBar) {
+				progressBar.style.transform = `scaleX(${ratio})`;
+			}
+			// Ring um "Nach oben" füllt sich mit dem Lesefortschritt.
+			toTop?.style.setProperty('--scroll', ratio.toFixed(3));
 			ticking = false;
 		};
 
@@ -332,6 +338,26 @@
 			}
 		}, { passive: true });
 		updateProgress();
+	}
+
+	/* ------------------------------------------------------------------
+	 * Footer-Schriftzug: Glanzlicht folgt der Maus, Buchstaben kippen leicht
+	 * ---------------------------------------------------------------- */
+	const mark = doc.querySelector('.footer__mark');
+
+	if (mark && !reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+		const footer = mark.closest('.footer');
+		footer.addEventListener('pointermove', (e) => {
+			const r = mark.getBoundingClientRect();
+			const x = (e.clientX - r.left) / r.width;
+			const y = (e.clientY - r.top) / r.height;
+			mark.style.setProperty('--mx', `${(x * 100).toFixed(1)}%`);
+			mark.style.setProperty('--tilt', `${((0.5 - Math.min(1, Math.max(0, y))) * 14).toFixed(2)}deg`);
+		});
+		footer.addEventListener('pointerleave', () => {
+			mark.style.removeProperty('--mx');
+			mark.style.removeProperty('--tilt');
+		});
 	}
 
 	/* ------------------------------------------------------------------
