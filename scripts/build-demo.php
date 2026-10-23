@@ -114,14 +114,27 @@ $rewrite_html = static function ( string $html ) use ( $src, $base, $banner, $de
 	return $html;
 };
 
-// 2. Seiten speichern.
+// 2. Seiten speichern. Zusätzlich allen internen Links folgen - die Sitemap
+// von WordPress kennt z. B. das Leistungsarchiv /leistungen/ nicht.
 $count = 0;
-foreach ( $pages as $path ) {
+$seen  = array_fill_keys( $pages, true );
+while ( $pages ) {
+	$path = array_shift( $pages );
 	$html = fetch( $src . $path, $status );
 	if ( 200 !== $status || null === $html ) {
 		fwrite( STDERR, "Übersprungen ($status): $path\n" );
 		continue;
 	}
+
+	preg_match_all( '#href=["\']' . preg_quote( $src, '#' ) . '(/[^"\'\#?\s]*)["\'\#]#', $html, $links );
+	foreach ( $links[1] as $link ) {
+		$skip = preg_match( '#^/(wp-|feed|comments|xmlrpc)|\.[a-z0-9]{2,5}$#i', $link );
+		if ( ! $skip && str_ends_with( $link, '/' ) && ! isset( $seen[ $link ] ) ) {
+			$seen[ $link ] = true;
+			$pages[]       = $link;
+		}
+	}
+
 	save( target( $out, $path ), $rewrite_html( $html ) );
 	$count++;
 }
