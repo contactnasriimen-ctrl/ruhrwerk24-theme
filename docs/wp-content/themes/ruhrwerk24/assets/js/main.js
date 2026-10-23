@@ -18,11 +18,23 @@
 	const header = doc.getElementById('header');
 	const callbar = doc.getElementById('callbar');
 
+	// Solange ein Anfrageformular im Bild ist, tritt die Schnellleiste zurück -
+	// sonst verdeckt sie auf dem Handy den "Weiter"-Knopf.
+	const formsInView = new Set();
+
 	const onScroll = () => {
 		const y = window.scrollY;
 		header?.classList.toggle('is-scrolled', y > 8);
-		callbar?.classList.toggle('is-visible', y > 320);
+		callbar?.classList.toggle('is-visible', y > 320 && formsInView.size === 0);
 	};
+
+	if (callbar && 'IntersectionObserver' in window) {
+		const formIO = new IntersectionObserver((entries) => {
+			entries.forEach((e) => (e.isIntersecting ? formsInView.add(e.target) : formsInView.delete(e.target)));
+			onScroll();
+		}, { threshold: 0.05 });
+		doc.querySelectorAll('[data-qf]').forEach((form) => formIO.observe(form));
+	}
 
 	window.addEventListener('scroll', onScroll, { passive: true });
 	onScroll();
