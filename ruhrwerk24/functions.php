@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'RW24_VERSION', '2.4.3' );
+define( 'RW24_VERSION', '2.5.0' );
 define( 'RW24_DIR', get_template_directory() );
 define( 'RW24_URI', get_template_directory_uri() );
 

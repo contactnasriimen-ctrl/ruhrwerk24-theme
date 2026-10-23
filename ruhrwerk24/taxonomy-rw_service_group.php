@@ -47,6 +47,12 @@ get_header();
 		</div>
 	</section>
 
+	<?php
+	if ( rw24_transport_group() === get_queried_object()->slug ) {
+		get_template_part( 'template-parts/transport-band' );
+	}
+	?>
+
 	<?php get_template_part( 'template-parts/process' ); ?>
 
 	<?php get_template_part( 'template-parts/cta' ); ?>

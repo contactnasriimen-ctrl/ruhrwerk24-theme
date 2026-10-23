@@ -68,41 +68,56 @@ function rw24_ensure_page( string $slug, array $page ): int {
 }
 
 /**
- * Gruppen und Leistungen anlegen.
+ * Gruppe anlegen, falls es sie noch nicht gibt.
+ *
+ * @return int Term-ID oder 0.
  */
-function rw24_setup_services(): void {
-	$order = 0;
-	$terms = array();
+function rw24_ensure_group( string $slug ): int {
+	$groups = rw24_blueprint_groups();
+	$order  = array_search( $slug, array_keys( $groups ), true );
+	$term   = term_exists( $slug, 'rw_service_group' );
 
-	foreach ( rw24_blueprint_groups() as $slug => $group ) {
-		$term = term_exists( $slug, 'rw_service_group' );
-
-		if ( ! $term ) {
-			$term = wp_insert_term( $group['name'], 'rw_service_group', array( 'slug' => $slug, 'description' => $group['description'] ) );
-		}
-
-		if ( is_wp_error( $term ) ) {
-			continue;
-		}
-
-		$terms[ $slug ] = (int) $term['term_id'];
-
-		// metadata_exists statt Leerprüfung: register_term_meta liefert sonst den Standardwert 0.
-		if ( ! metadata_exists( 'term', $terms[ $slug ], '_rw_order' ) ) {
-			update_term_meta( $terms[ $slug ], '_rw_order', $order );
-		}
-
-		$order += 10;
+	if ( ! $term && isset( $groups[ $slug ] ) ) {
+		$term = wp_insert_term( $groups[ $slug ]['name'], 'rw_service_group', array( 'slug' => $slug, 'description' => $groups[ $slug ]['description'] ) );
 	}
 
+	if ( ! $term || is_wp_error( $term ) ) {
+		return 0;
+	}
+
+	$id = (int) $term['term_id'];
+
+	// metadata_exists statt Leerprüfung: register_term_meta liefert sonst den Standardwert 0.
+	if ( ! metadata_exists( 'term', $id, '_rw_order' ) ) {
+		update_term_meta( $id, '_rw_order', false === $order ? 99 : $order * 10 );
+	}
+
+	return $id;
+}
+
+/**
+ * Gruppen und Leistungen anlegen.
+ *
+ * @param string|null $since Nur Leistungen anlegen, die nach dieser Theme-
+ *                           Version dazukamen (Update). null = alle (Aktivierung).
+ *                           So entsteht eine Leistung, die die Redaktion
+ *                           gelöscht hat, bei einem Update nicht neu.
+ */
+function rw24_setup_services( ?string $since = null ): void {
 	$menu_order = 0;
 
 	foreach ( rw24_blueprint_services() as $slug => $service ) {
 		$menu_order += 10;
 
+		if ( null !== $since && version_compare( $service['since'] ?? '0', $since, '<=' ) ) {
+			continue;
+		}
+
 		if ( get_page_by_path( $slug, OBJECT, 'rw_service' ) ) {
 			continue;
 		}
+
+		$group_id = rw24_ensure_group( $service['group'] );
 
 		$id = wp_insert_post(
 			array(
@@ -120,8 +135,8 @@ function rw24_setup_services(): void {
 			continue;
 		}
 
-		if ( isset( $terms[ $service['group'] ] ) ) {
-			wp_set_object_terms( $id, $terms[ $service['group'] ], 'rw_service_group' );
+		if ( $group_id ) {
+			wp_set_object_terms( $id, $group_id, 'rw_service_group' );
 		}
 
 		$faq = array();
@@ -161,8 +176,15 @@ function rw24_store_blueprint_hash( int $id ): void {
  * unangetastet - ebenso Leistungen ohne Prüfsumme (vor Version 2.2 angelegt).
  */
 function rw24_upgrade_blueprint(): void {
-	if ( get_option( 'rw24_setup_version' ) === RW24_VERSION || ! current_user_can( 'manage_options' ) ) {
+	$previous = (string) get_option( 'rw24_setup_version' );
+
+	if ( RW24_VERSION === $previous || ! current_user_can( 'manage_options' ) ) {
 		return;
+	}
+
+	// Leistungen, die seit der installierten Version dazugekommen sind.
+	if ( $previous ) {
+		rw24_setup_services( $previous );
 	}
 
 	foreach ( rw24_blueprint_services() as $slug => $service ) {

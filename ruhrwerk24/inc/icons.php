@@ -40,6 +40,9 @@ function rw24_icon_paths(): array {
 		'chat'     => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
 		'home'     => '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
 		'star'     => '<path d="m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8-6.2-3.2L5.8 21 7 14.2 2 9.3l6.9-1z"/>',
+		'truck'    => '<path d="M2 6h11v10H2z"/><path d="M13 9h4.5l3.5 3.5V16h-8"/><circle cx="6" cy="17.5" r="2"/><circle cx="17" cy="17.5" r="2"/>',
+		'building' => '<path d="M4 21V5l8-3v19"/><path d="M12 9h8v12"/><path d="M8 7v.01M8 11v.01M8 15v.01M16 13v.01M16 17v.01M2 21h20"/>',
+		'package'  => '<path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/><path d="M7.5 5.5 16.5 10.5v3"/>',
 	);
 }
 
@@ -77,7 +80,10 @@ function rw24_icon_choices(): array {
 		'flame'   => __( 'Heizung', 'ruhrwerk24' ),
 		'bolt'    => __( 'Elektro', 'ruhrwerk24' ),
 		'trowel'  => __( 'Ausbau', 'ruhrwerk24' ),
-		'box'     => __( 'Räumung', 'ruhrwerk24' ),
+		'box'      => __( 'Räumung', 'ruhrwerk24' ),
+		'truck'    => __( 'Umzug / Transporter', 'ruhrwerk24' ),
+		'building' => __( 'Firma / Gebäude', 'ruhrwerk24' ),
+		'package'  => __( 'Paket / Transport', 'ruhrwerk24' ),
 		'home'    => __( 'Haus', 'ruhrwerk24' ),
 		'leaf'    => __( 'Umwelt', 'ruhrwerk24' ),
 		'tool'    => __( 'Werkzeug', 'ruhrwerk24' ),

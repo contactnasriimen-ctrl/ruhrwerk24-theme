@@ -128,6 +128,12 @@ function rw24_render_form( string $context = 'page' ): void {
 		$preset_service = get_post_field( 'post_name', get_queried_object_id() );
 	}
 
+	// Links wie /anfrage/?leistung=umzug wählen die Leistung schon vor.
+	$requested = isset( $_GET['leistung'] ) ? sanitize_key( wp_unslash( $_GET['leistung'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( ! $preset_service && isset( $choices['service'][ $requested ] ) ) {
+		$preset_service = $requested;
+	}
+
 	$city        = rw24_current_city();
 	$preset_zip  = rw24_form_old( 'zip' );
 	$preset_city = $city ? $city['name'] : rw24_form_old( 'place' );

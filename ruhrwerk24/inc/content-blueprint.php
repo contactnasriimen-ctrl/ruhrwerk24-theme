@@ -30,7 +30,25 @@ function rw24_blueprint_groups(): array {
 			'name'        => __( 'Ausbau & Räumung', 'ruhrwerk24' ),
 			'description' => __( 'Vom Bad bis zum Keller: Wir bauen aus, renovieren und räumen – sauber, termintreu und zum Festpreis.', 'ruhrwerk24' ),
 		),
+		'transport'    => array(
+			'name'        => __( 'Umzug & Transport', 'ruhrwerk24' ),
+			'description' => __( 'Privatumzug, Firmenumzug oder ein einzelnes Möbelstück: Wir packen, tragen, fahren und bauen wieder auf – mit eigenem Team und Festpreis.', 'ruhrwerk24' ),
+		),
 	);
+}
+
+/**
+ * Gruppe, deren Leistungen die 3D-Transporter-Szene bekommen.
+ */
+function rw24_transport_group(): string {
+	return (string) apply_filters( 'rw24_transport_group', 'transport' );
+}
+
+/**
+ * Gehört eine Leistung zu Umzug & Transport?
+ */
+function rw24_is_transport( int $post_id ): bool {
+	return has_term( rw24_transport_group(), 'rw_service_group', $post_id );
 }
 
 /**
@@ -368,6 +386,130 @@ function rw24_blueprint_services(): array {
 			),
 			'faq'       => array(
 				__( 'Muss ich bei der Räumung dabei sein?', 'ruhrwerk24' ) => __( 'Nein. Viele Kunden übergeben uns den Schlüssel und kommen erst zur Abnahme. Wir schicken Ihnen Fotos vom Ergebnis.', 'ruhrwerk24' ),
+			),
+		),
+
+		// Seit 2.5.0: Umzug & Transport. "since" sorgt dafür, dass ein Update
+		// diese Leistungen auf bestehenden Seiten ergänzt - einmal, nicht wieder.
+		'umzug' => array(
+			'title'     => __( 'Umzug', 'ruhrwerk24' ),
+			'group'     => 'transport',
+			'icon'      => 'truck',
+			'emergency' => false,
+			'since'     => '2.5.0',
+			'claim'     => __( 'Vom ersten Karton bis zum letzten Bild an der Wand – Ihr Umzug zum Festpreis.', 'ruhrwerk24' ),
+			'excerpt'   => __( 'Privatumzüge in NRW und deutschlandweit: verpacken, tragen, fahren, Möbel wieder aufbauen.', 'ruhrwerk24' ),
+			'content'   => rw24_bp_p(
+				__( 'Ein Umzug ist anstrengend genug. Wir nehmen Ihnen ab, was Sie nicht selbst machen wollen – oder gleich alles. Unser eigenes Team packt, schützt Möbel und Böden, trägt, fährt und baut am neuen Ort wieder auf. Sie bekommen nach der Besichtigung einen Festpreis, der nicht mehr steigt.', 'ruhrwerk24' )
+			)
+				. rw24_bp_h2( __( 'Was wir für Sie übernehmen', 'ruhrwerk24' ) )
+				. rw24_bp_list(
+					array(
+						__( 'Besichtigung vor Ort oder per Video – kostenlos', 'ruhrwerk24' ),
+						__( 'Umzugskartons, Packpapier und Kleiderboxen', 'ruhrwerk24' ),
+						__( 'Ein- und Auspacken auf Wunsch', 'ruhrwerk24' ),
+						__( 'Möbel ab- und wieder aufbauen, Küchen montieren', 'ruhrwerk24' ),
+						__( 'Halteverbotszone beantragen und aufstellen', 'ruhrwerk24' ),
+						__( 'Entrümpelung und Endreinigung der alten Wohnung', 'ruhrwerk24' ),
+					)
+				)
+				. rw24_bp_h2( __( 'So läuft Ihr Umzug ab', 'ruhrwerk24' ) )
+				. rw24_bp_list(
+					array(
+						__( '<strong>Besichtigung:</strong> Wir sehen uns Umfang, Etagen und Wege an – vor Ort oder per Videoanruf.', 'ruhrwerk24' ),
+						__( '<strong>Festpreis:</strong> schriftlich, mit allen Leistungen. Ohne Nachberechnung für Stockwerke oder Laufwege.', 'ruhrwerk24' ),
+						__( '<strong>Vorbereitung:</strong> Kartons kommen zu Ihnen, die Halteverbotszone steht am Umzugstag.', 'ruhrwerk24' ),
+						__( '<strong>Umzugstag:</strong> Ein fester Teamleiter führt das Team und ist Ihr Ansprechpartner.', 'ruhrwerk24' ),
+						__( '<strong>Übergabe:</strong> Möbel stehen, Lampen hängen, die alte Wohnung ist besenrein.', 'ruhrwerk24' ),
+					),
+					true
+				)
+				. rw24_bp_h2( __( 'Gut zu wissen', 'ruhrwerk24' ) )
+				. rw24_bp_p(
+					__( 'Die Arbeitskosten eines Privatumzugs lassen sich als haushaltsnahe Dienstleistung steuerlich geltend machen. Wir weisen sie auf der Rechnung getrennt aus – fragen Sie Ihre Steuerberatung, was in Ihrem Fall gilt.', 'ruhrwerk24' )
+				),
+			'features'  => array(
+				__( 'Festpreis nach Besichtigung', 'ruhrwerk24' ),
+				__( 'Verpackungsservice und Material', 'ruhrwerk24' ),
+				__( 'Möbel- und Küchenmontage', 'ruhrwerk24' ),
+				__( 'Halteverbotszone inklusive', 'ruhrwerk24' ),
+			),
+			'faq'       => array(
+				__( 'Wie früh sollte ich den Umzug buchen?', 'ruhrwerk24' ) => __( 'Am besten vier bis sechs Wochen vorher. Zum Monatsende sind die Termine schnell vergeben – kurzfristige Umzüge machen wir trotzdem möglich, wenn es geht.', 'ruhrwerk24' ),
+				__( 'Was passiert, wenn etwas beschädigt wird?', 'ruhrwerk24' ) => __( 'Wir haften im Rahmen der gesetzlichen Regeln für Umzugsunternehmen. Für besonders wertvolle Stücke vereinbaren wir vorab gern eine Zusatzversicherung.', 'ruhrwerk24' ),
+			),
+		),
+
+		'firmenumzug' => array(
+			'title'     => __( 'Firmenumzug', 'ruhrwerk24' ),
+			'group'     => 'transport',
+			'icon'      => 'building',
+			'emergency' => false,
+			'since'     => '2.5.0',
+			'claim'     => __( 'Freitag zugeschlossen, Montag weitergearbeitet – Büro- und Betriebsumzüge ohne Stillstand.', 'ruhrwerk24' ),
+			'excerpt'   => __( 'Büros, Praxen, Werkstätten: geplant mit Projektleiter, umgesetzt nach Feierabend oder am Wochenende.', 'ruhrwerk24' ),
+			'content'   => rw24_bp_p(
+				__( 'Jeder Tag, an dem Ihr Betrieb stillsteht, kostet. Deshalb planen wir Firmenumzüge so, dass Ihre Mitarbeiter am Freitag den Rechner ausschalten und ihn am Montag am neuen Platz wieder einschalten. Ein Projektleiter koordiniert alles – vom Etikettensystem bis zum Anschluss der Arbeitsplätze.', 'ruhrwerk24' )
+			)
+				. rw24_bp_h2( __( 'Unsere Leistungen', 'ruhrwerk24' ) )
+				. rw24_bp_list(
+					array(
+						__( 'Umzugsplanung mit Zeitplan und Raumplan', 'ruhrwerk24' ),
+						__( 'Etikettensystem: jeder Karton findet seinen Platz', 'ruhrwerk24' ),
+						__( 'Abbau und Aufbau von Büromöbeln und Arbeitsplätzen', 'ruhrwerk24' ),
+						__( 'Sicherer Transport von IT, Akten und Archiven', 'ruhrwerk24' ),
+						__( 'Elektro- und Netzwerkanschlüsse durch unsere Elektriker', 'ruhrwerk24' ),
+						__( 'Entsorgung von Altmobiliar mit Nachweis', 'ruhrwerk24' ),
+					)
+				)
+				. rw24_bp_h2( __( 'Alles aus einer Hand', 'ruhrwerk24' ) )
+				. rw24_bp_p(
+					__( 'Weil Elektro, Trockenbau und Malerarbeiten bei uns im Haus sind, wird die neue Fläche nicht nur bezogen, sondern auch fertig gemacht: Steckdosen, Trennwände und frische Farbe – ohne drei weitere Firmen zu koordinieren.', 'ruhrwerk24' )
+				),
+			'features'  => array(
+				__( 'Fester Projektleiter', 'ruhrwerk24' ),
+				__( 'Umzug nach Feierabend oder am Wochenende', 'ruhrwerk24' ),
+				__( 'IT- und Aktentransport', 'ruhrwerk24' ),
+				__( 'Elektro und Ausbau aus eigener Hand', 'ruhrwerk24' ),
+			),
+			'faq'       => array(
+				__( 'Können Sie auch am Wochenende umziehen?', 'ruhrwerk24' ) => __( 'Ja, das ist bei Firmenumzügen sogar die Regel. So bleibt Ihr Betrieb unter der Woche erreichbar.', 'ruhrwerk24' ),
+			),
+		),
+
+		'transporte' => array(
+			'title'     => __( 'Transporte & Möbellieferung', 'ruhrwerk24' ),
+			'group'     => 'transport',
+			'icon'      => 'package',
+			'emergency' => false,
+			'since'     => '2.5.0',
+			'claim'     => __( 'Ein Sofa, ein Schrank, eine Waschmaschine – kurzfristig abgeholt und sicher geliefert.', 'ruhrwerk24' ),
+			'excerpt'   => __( 'Einzeltransporte, Lieferung vom Möbelhaus, Mitnahme von Altgeräten – auch kurzfristig.', 'ruhrwerk24' ),
+			'content'   => rw24_bp_p(
+				__( 'Nicht jeder Transport ist ein Umzug. Manchmal ist es nur das neue Sofa vom Möbelhaus, der Kleiderschrank von Oma oder die Waschmaschine in den dritten Stock. Dafür gibt es uns auch: mit Transporter, zwei kräftigen Händepaaren und Werkzeug für den Aufbau.', 'ruhrwerk24' )
+			)
+				. rw24_bp_h2( __( 'Was wir transportieren', 'ruhrwerk24' ) )
+				. rw24_bp_list(
+					array(
+						__( 'Einzelne Möbelstücke und Kleintransporte', 'ruhrwerk24' ),
+						__( 'Abholung und Lieferung vom Möbelhaus inklusive Aufbau', 'ruhrwerk24' ),
+						__( 'Waschmaschinen, Trockner und Kühlschränke – auf Wunsch angeschlossen', 'ruhrwerk24' ),
+						__( 'Mitnahme und Entsorgung des Altgeräts', 'ruhrwerk24' ),
+						__( 'Transporte für Händler und Gewerbe', 'ruhrwerk24' ),
+					)
+				)
+				. rw24_bp_h2( __( 'Kurzfristig und planbar', 'ruhrwerk24' ) )
+				. rw24_bp_p(
+					__( 'Für Einzeltransporte bekommen Sie meist innerhalb weniger Tage einen Termin, oft auch am selben Tag. Den Preis nennen wir vorab – auf Grundlage von Strecke, Stockwerken und Gewicht.', 'ruhrwerk24' )
+				),
+			'features'  => array(
+				__( 'Termine oft am selben Tag', 'ruhrwerk24' ),
+				__( 'Aufbau und Anschluss', 'ruhrwerk24' ),
+				__( 'Altgeräte-Mitnahme', 'ruhrwerk24' ),
+				__( 'Festpreis vorab', 'ruhrwerk24' ),
+			),
+			'faq'       => array(
+				__( 'Schließen Sie die Waschmaschine auch an?', 'ruhrwerk24' ) => __( 'Ja. Unsere Sanitärer schließen Wasch- und Spülmaschinen fachgerecht an – das Altgerät nehmen wir auf Wunsch gleich mit.', 'ruhrwerk24' ),
 			),
 		),
 	);

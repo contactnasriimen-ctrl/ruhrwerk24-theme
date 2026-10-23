@@ -39,6 +39,13 @@ $rw_facts    = $args['facts'] ?? array();
 		</div>
 
 		<aside class="service-aside">
+			<?php if ( rw24_is_transport( $rw_id ) ) : ?>
+				<?php // 3D-Transporter neben dem Text (auf dem Handy steht er schon im Seitenkopf). ?>
+				<div class="panel panel--stage reveal" aria-hidden="true">
+					<div class="scene3d scene3d--stage" data-scene3d="truck" data-scene3d-desktop></div>
+				</div>
+			<?php endif; ?>
+
 			<?php if ( $rw_features ) : ?>
 				<div class="panel reveal">
 					<h2 class="panel__title"><?php esc_html_e( 'Das ist inklusive', 'ruhrwerk24' ); ?></h2>

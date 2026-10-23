@@ -34,6 +34,9 @@ Theme für Ruhrwerk24 – Handwerk, Sanierung und Notdienst in NRW.
   regionale Absätze auf Stadtseiten, ausführlichere Leistungstexte.
   Unveränderte Leistungstexte werden beim Update aufgefrischt, bearbeitete
   bleiben unangetastet.
+* Seit 2.5: Gruppe "Umzug & Transport" (Umzug, Firmenumzug, Transporte)
+  mit 3D-Transporter. Updates ergänzen neue Leistungen einmalig, gelöschte
+  Leistungen werden nicht wieder angelegt.
 * Anfrageformular mit acht Schritten, ohne Plugin, ohne Captcha
   (Honeypot, signierter Zeitstempel, Limit pro IP). Funktioniert auch
   ohne JavaScript.

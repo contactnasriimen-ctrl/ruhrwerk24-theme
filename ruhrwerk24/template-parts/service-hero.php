@@ -73,7 +73,7 @@ $rw_lead  = $args['lead'] ?? (string) get_post_meta( $rw_id, '_rw_short_claim', 
 
 			<?php if ( ! $rw_hero ) : ?>
 				<?php // Ohne Foto übernimmt das 3D-Rohrnetz die Bühne (auf dem Handy zwischen Text und Formular). ?>
-				<div class="scene3d" data-scene3d="service" aria-hidden="true"></div>
+				<div class="scene3d" data-scene3d="service"<?php echo rw24_is_transport( $rw_id ) ? ' data-scene3d-mobile="truck"' : ''; ?> aria-hidden="true"></div>
 			<?php endif; ?>
 
 			<div class="hero__form" id="anfrage">
