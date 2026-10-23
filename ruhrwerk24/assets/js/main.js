@@ -290,9 +290,9 @@
 
 	/* ------------------------------------------------------------------
 	 * Elemente, die dem Scrollen folgen (--p von 0 bis 1)
-	 * Kartenstapel "Über uns" fächert sich auf, Zahlen kippen ins Bild.
+	 * Die 3D-Zahlen kippen beim Scrollen ins Bild.
 	 * ---------------------------------------------------------------- */
-	const scrubbed = doc.querySelectorAll('.stack, .stats__list');
+	const scrubbed = doc.querySelectorAll('.stats__list');
 
 	if (scrubbed.length && !reduceMotion) {
 		let pending = false;
@@ -316,6 +316,115 @@
 	} else {
 		scrubbed.forEach((el) => el.style.setProperty('--p', '1'));
 	}
+
+	/* ------------------------------------------------------------------
+	 * 3D-Karussell der Leistungsbereiche ("Über uns")
+	 * Pfeile, Punkte, Pfeiltasten, Wischen und Klick auf eine Seitenkarte.
+	 * Dreht sich alle 5 Sekunden weiter, solange niemand eingreift.
+	 * ---------------------------------------------------------------- */
+	doc.querySelectorAll('[data-deck]').forEach((deck) => {
+		const cards = Array.from(deck.querySelectorAll('[data-deck-card]'));
+		const nav = deck.querySelector('.deck__nav');
+		const dots = Array.from(deck.querySelectorAll('[data-deck-dot]'));
+		const total = cards.length;
+
+		if (total < 2 || !nav) {
+			return;
+		}
+
+		let active = 0;
+		let timer = 0;
+		let userTookOver = false;
+		let paused = false;
+		let inView = false;
+
+		const show = (index) => {
+			active = (index + total) % total;
+
+			cards.forEach((card, k) => {
+				let pos = (k - active + total) % total;
+				if (pos > total / 2) {
+					pos -= total;
+				}
+				const front = pos === 0;
+				card.dataset.pos = Math.abs(pos) > 1 ? 'far' : String(pos);
+				card.setAttribute('aria-hidden', front ? 'false' : 'true');
+				// Nur die vordere Karte ist per Tastatur erreichbar.
+				card.querySelectorAll('a').forEach((a) => (front ? a.removeAttribute('tabindex') : a.setAttribute('tabindex', '-1')));
+			});
+
+			dots.forEach((dot, k) => dot.setAttribute('aria-current', k === active ? 'true' : 'false'));
+		};
+
+		const takeOver = (index) => {
+			userTookOver = true;
+			window.clearInterval(timer);
+			show(index);
+		};
+
+		deck.classList.add('is-ready');
+		nav.hidden = false;
+		show(0);
+
+		deck.querySelector('[data-deck-prev]').addEventListener('click', () => takeOver(active - 1));
+		deck.querySelector('[data-deck-next]').addEventListener('click', () => takeOver(active + 1));
+		dots.forEach((dot, k) => dot.addEventListener('click', () => takeOver(k)));
+
+		// Klick auf eine Seitenkarte holt sie nach vorn, statt dem Link zu folgen.
+		cards.forEach((card, k) => {
+			card.addEventListener('click', (e) => {
+				if (card.dataset.pos !== '0') {
+					e.preventDefault();
+					takeOver(k);
+				}
+			});
+		});
+
+		deck.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowLeft') {
+				takeOver(active - 1);
+			} else if (e.key === 'ArrowRight') {
+				takeOver(active + 1);
+			}
+		});
+
+		// Wischen auf Touch-Geräten.
+		let startX = null;
+		const stage = deck.querySelector('.deck__stage');
+		stage.addEventListener('pointerdown', (e) => {
+			startX = e.clientX;
+		});
+		stage.addEventListener('pointerup', (e) => {
+			if (startX === null) {
+				return;
+			}
+			const dx = e.clientX - startX;
+			startX = null;
+			if (Math.abs(dx) > 40) {
+				takeOver(active + (dx < 0 ? 1 : -1));
+			}
+		});
+
+		// Selbstständig weiterdrehen - nur sichtbar, ohne Maus darüber, ohne reduzierte Bewegung.
+		if (!reduceMotion) {
+			deck.addEventListener('pointerenter', () => (paused = true));
+			deck.addEventListener('pointerleave', () => (paused = false));
+			deck.addEventListener('focusin', () => (paused = true));
+			deck.addEventListener('focusout', () => (paused = false));
+
+			if ('IntersectionObserver' in window) {
+				new IntersectionObserver(([entry]) => (inView = entry.isIntersecting), { threshold: 0.4 }).observe(deck);
+			} else {
+				inView = true;
+			}
+
+			timer = window.setInterval(() => {
+				if (!userTookOver && !paused && inView && !doc.hidden) {
+					show(active + 1);
+				}
+			}, 5000);
+		}
+	});
 
 	/* ------------------------------------------------------------------
 	 * Magnetische Knöpfe: folgen dem Mauszeiger ein Stück

@@ -2362,80 +2362,229 @@ a.chip:hover { transform: translateY(-2px); box-shadow: 0 6px 14px -8px var(--ac
 .about__text p { color: var(--muted); }
 .about__list { margin-top: var(--s-m); }
 
-.stack {
-	--p: 1;
-	position: relative;
-	height: 420px;
-	perspective: 1200px;
-	transform-style: preserve-3d;
+/* 3D-Karussell der Leistungsbereiche ("Über uns")
+   Ohne JavaScript: Karten untereinander. Mit main.js (.deck.is-ready):
+   vordere Karte voll lesbar, die anderen gedreht seitlich dahinter. */
+.deck { position: relative; }
+
+.deck__stage {
+	display: grid;
+	gap: var(--s-m);
 }
 
-.stack__card {
-	position: absolute;
-	top: 50%;
-	left: 50%;
+.deck__card {
+	position: relative;
 	display: flex;
 	flex-direction: column;
-	gap: .4rem;
-	width: min(320px, 78vw);
-	padding: var(--s-m);
+	width: 100%;
+	max-width: 440px;
+	justify-self: center;
+	padding: var(--s-l) var(--s-l) var(--s-m);
 	border-radius: var(--r-l);
-	background: linear-gradient(160deg, var(--navy-lift), var(--navy-deep));
-	color: rgb(255 255 255 / .7);
+	background: linear-gradient(160deg, var(--navy-lift), var(--navy) 55%, var(--navy-deep));
+	color: rgb(255 255 255 / .74);
 	box-shadow: var(--shadow-l), inset 0 1px 0 rgb(255 255 255 / .12);
-	/* Gestapelt bei --p 0, aufgefächert bei --p 1 */
-	transform:
-		translate(-50%, -50%)
-		translate3d(calc((var(--n) - 1) * var(--spread, 70px) * var(--p)), calc((var(--n) - 1) * -26px * var(--p) - var(--n) * 8px), calc(var(--n) * -60px))
-		rotateY(calc(-18deg * var(--p)))
-		rotateX(calc(8deg * var(--p)))
-		rotateZ(calc((var(--n) - 1) * 5deg * var(--p)));
-	transition: transform .2s linear;
+	overflow: hidden;
+	isolation: isolate;
 }
 
-.stack__card:nth-child(1) { z-index: 3; background: linear-gradient(160deg, var(--accent-hi), var(--accent-lo)); color: rgb(6 22 41 / .78); }
-.stack__card:nth-child(2) { z-index: 2; }
-.stack__card:nth-child(3) { z-index: 1; }
+/* Lichtfleck in Markenorange oben rechts */
+.deck__card::before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	top: -120px;
+	right: -120px;
+	width: 280px;
+	height: 280px;
+	border-radius: 50%;
+	background: radial-gradient(closest-side, var(--accent-glow), transparent);
+	opacity: .45;
+}
 
-.stack__card strong { font-size: 1.6rem; font-stretch: 78%; line-height: 1.1; color: var(--white); }
-.stack__card:nth-child(1) strong { color: var(--navy-deep); }
+.deck__top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: var(--s-m);
+}
 
-.stack__icon {
+.deck__icon {
 	display: grid;
 	place-items: center;
-	width: 52px;
-	height: 52px;
-	margin-bottom: .6rem;
-	border-radius: 14px;
-	background: rgb(255 255 255 / .14);
+	width: 58px;
+	height: 58px;
+	border-radius: 16px;
+	background: var(--accent);
+	color: var(--navy-deep);
+	box-shadow: 0 10px 24px -8px var(--accent-glow);
+}
+
+.deck__icon .icon { width: 28px; height: 28px; }
+
+.deck__num {
+	font-size: 3.6rem;
+	font-stretch: 70%;
+	font-weight: 900;
+	line-height: .9;
+	color: transparent;
+	-webkit-text-stroke: 1.5px rgb(255 255 255 / .3);
+}
+
+.deck__title {
+	margin-bottom: .5rem;
+	font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem);
 	color: var(--white);
 }
 
-.stack__card:nth-child(1) .stack__icon { background: var(--navy-deep); color: var(--accent); }
+.deck__text { margin-bottom: var(--s-m); font-size: var(--fs-s); }
 
-.stack__num {
-	position: absolute;
-	top: var(--s-m);
-	right: var(--s-m);
-	font-size: 2.6rem;
-	font-stretch: 70%;
-	font-weight: 900;
-	line-height: 1;
-	color: rgb(255 255 255 / .16);
+.deck__services {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .45rem;
+	margin: 0 0 var(--s-m);
+	padding: 0;
+	list-style: none;
 }
 
-.stack__items { font-size: var(--fs-s); }
-
-@media (prefers-reduced-motion: no-preference) {
-	.stack__card { animation: stack-float 6s ease-in-out infinite; animation-delay: calc(var(--n) * -2s); }
+.deck__services a {
+	display: inline-flex;
+	align-items: center;
+	min-height: 40px;
+	padding: .4rem .85rem;
+	border: 1px solid rgb(255 255 255 / .16);
+	border-radius: 99px;
+	background: rgb(255 255 255 / .07);
+	font-size: var(--fs-xs);
+	font-weight: 600;
+	color: var(--white);
+	text-decoration: none;
+	transition: background var(--t), border-color var(--t), color var(--t);
 }
 
-@keyframes stack-float { 50% { translate: 0 -10px; } }
+.deck__services a:hover { border-color: var(--accent); background: var(--accent); color: var(--navy-deep); }
+
+.deck__more {
+	display: inline-flex;
+	align-items: center;
+	gap: .45rem;
+	min-height: 44px;
+	margin-top: auto;
+	font-weight: 700;
+	color: var(--accent-hi) !important;
+	text-decoration: none;
+}
+
+.deck__more .icon { width: 1.1em; transition: transform var(--t) var(--ease); }
+.deck__more:hover .icon { transform: translateX(4px); }
+
+/* --- 3D-Modus ------------------------------------------------------- */
+.deck.is-ready .deck__stage {
+	gap: 0;
+	perspective: 1400px;
+	transform-style: preserve-3d;
+	touch-action: pan-y;
+}
+
+.deck.is-ready .deck__card {
+	grid-area: 1 / 1;
+	transition: transform .8s cubic-bezier(.2, .8, .2, 1), opacity .6s var(--ease), filter .6s var(--ease), box-shadow .6s;
+	will-change: transform;
+}
+
+.deck.is-ready .deck__card[data-pos="0"] {
+	z-index: 3;
+	transform: none;
+	box-shadow: var(--shadow-l), 0 0 0 1px var(--accent-line), 0 0 40px -10px var(--accent-glow), inset 0 1px 0 rgb(255 255 255 / .14);
+}
+
+.deck.is-ready .deck__card[data-pos="1"],
+.deck.is-ready .deck__card[data-pos="-1"] {
+	z-index: 2;
+	opacity: .6;
+	filter: saturate(.75) brightness(.8);
+	cursor: pointer;
+}
+
+.deck.is-ready .deck__card[data-pos="1"] { transform: translateX(32%) translateZ(-200px) rotateY(-30deg) scale(.92); }
+.deck.is-ready .deck__card[data-pos="-1"] { transform: translateX(-32%) translateZ(-200px) rotateY(30deg) scale(.92); }
+
+.deck.is-ready .deck__card[data-pos="1"]:hover,
+.deck.is-ready .deck__card[data-pos="-1"]:hover { opacity: .85; filter: none; }
+
+.deck.is-ready .deck__card[data-pos="far"] {
+	z-index: 1;
+	opacity: 0;
+	transform: translateZ(-420px) scale(.8);
+	pointer-events: none;
+}
 
 @media (max-width: 960px) {
-	.stack { --spread: 26px; height: 340px; }
-	.stack__card { width: min(280px, 66vw); }
+	.deck.is-ready .deck__card[data-pos="1"] { transform: translateX(18%) translateZ(-160px) rotateY(-24deg) scale(.9); }
+	.deck.is-ready .deck__card[data-pos="-1"] { transform: translateX(-18%) translateZ(-160px) rotateY(24deg) scale(.9); }
+	.deck__card { padding: var(--s-m); }
 }
+
+@media (prefers-reduced-motion: reduce) {
+	.deck.is-ready .deck__card { transition: opacity .2s; }
+}
+
+/* Steuerung */
+.deck__nav {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--s-s);
+	margin-top: var(--s-l);
+}
+
+.deck__nav[hidden] { display: none; }
+
+.deck__btn {
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	border: 1px solid var(--line);
+	border-radius: 50%;
+	background: var(--white);
+	color: var(--navy);
+	cursor: pointer;
+	box-shadow: var(--shadow-s);
+	transition: background var(--t), color var(--t), border-color var(--t), transform var(--t) var(--ease);
+}
+
+.deck__btn:hover { background: var(--navy); border-color: var(--navy); color: var(--white); transform: translateY(-2px); }
+
+.icon--flip { transform: scaleX(-1); }
+
+.deck__dots { display: flex; }
+
+.deck__dot {
+	position: relative;
+	width: 30px;
+	height: 44px;
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: pointer;
+}
+
+.deck__dot::before {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 9px;
+	height: 9px;
+	border-radius: 99px;
+	background: var(--navy-line);
+	transform: translate(-50%, -50%);
+	transition: width .35s var(--ease), background .35s;
+}
+
+.deck__dot[aria-current="true"]::before { width: 24px; background: var(--accent); }
 
 /* Ablauf: Verbindungslinie füllt sich, sobald die Schritte erscheinen */
 .process__list { position: relative; }
@@ -2738,7 +2887,6 @@ a.eyebrow,
 	.drawer { inset: var(--drawer-top, var(--header-h)) 0 0; }
 	.drawer__list a { padding-block: .6rem; font-size: 1.15rem; }
 	.callbar a { flex-direction: row; justify-content: center; gap: .5rem; padding-block: .45rem; }
-	.stack { height: 300px; }
 }
 
 /* Tablet hochkant (761-960 px): Formular nicht über die volle Breite */
