@@ -205,6 +205,12 @@ function buildNetwork(ctx, variant) {
 	});
 
 	ctx.layout = (portrait) => {
+		// Handy/Tablet: eigene breite Bühne - Netz mittig und formatfüllend.
+		if (small && !portrait && variant !== 'page') {
+			world.position.x = -4.6;
+			world.scale.setScalar(0.74);
+			return;
+		}
 		world.position.x = portrait ? 0.6 : cfg.x;
 		world.scale.setScalar(portrait ? 0.4 : cfg.scale);
 	};

@@ -2660,3 +2660,160 @@ a.chip:hover { transform: translateY(-2px); box-shadow: 0 6px 14px -8px var(--ac
 .has-bg3d .chip { background: rgb(255 255 255 / .85); }
 
 .has-bg3d .qf--page { box-shadow: 0 0 0 1px rgb(255 255 255 / .8), 0 30px 60px -24px rgb(10 25 50 / .4); }
+
+/* ======================================================================
+   2.4 - Responsiv bis ins Detail, 3D auch auf dem Handy
+   ====================================================================== */
+
+/* Sicherheitsnetz: Nichts darf die Seite seitlich verschiebbar machen.
+   "clip" statt "hidden", damit sticky-Elemente weiter funktionieren. */
+html,
+body { overflow-x: clip; }
+
+/* Der helle Schein hinter Texten bleibt innerhalb des Seitenrands. */
+.has-bg3d .head::before,
+.has-bg3d .about__text::before,
+.has-bg3d .service-body .prose::before { inset: -28px calc(-1 * min(40px, var(--gutter))); }
+
+/* Bento: auf schmalen Bildschirmen spannt keine Kachel mehr über zwei Spalten. */
+@media (max-width: 560px) {
+	.bento__item:nth-child(5),
+	.bento__item:nth-child(6) { grid-column: auto; }
+}
+
+.bento .bento__item--lg h3,
+.bento__item h3,
+.fact dd,
+.stats__item dd,
+.card__title,
+.citycard h3,
+h1,
+h2 {
+	overflow-wrap: break-word;
+	hyphens: auto;
+}
+
+@media (max-width: 560px) {
+	.bento .bento__item--lg h3 { max-width: none; font-size: clamp(1.5rem, 1.1rem + 2vw, 1.9rem); }
+}
+
+/* Tippflächen: mindestens 44 px hoch (Apple/Google-Empfehlung). */
+.logo,
+.header__phone,
+.link-arrow,
+a.eyebrow,
+.emergency__more,
+.citycard__all {
+	min-height: 44px;
+}
+
+.link-arrow,
+.emergency__more,
+.citycard__all { display: inline-flex; align-items: center; }
+
+.header__phone { padding-inline: .25rem; }
+
+/* Sehr schmale Handys (320-360 px) */
+@media (max-width: 360px) {
+	:root { --gutter: 14px; }
+
+	.hero h1 { font-size: 2rem; }
+	.hero__facts { gap: .5rem; }
+	.fact dt { font-size: 1.6rem; }
+	.fact dd { font-size: .75rem; }
+	.qf { padding: 1rem; }
+	.qf__options { gap: .45rem; }
+	.btn--wide { padding-inline: 1.1rem; }
+	.hero__actions .btn { flex: 1 1 100%; }
+	.logo { font-size: 1.3rem; }
+	.logo__mark { width: 34px; height: 34px; }
+	.stats__value { font-size: 3rem; }
+}
+
+/* Handy quer: Kopfbereiche nicht höher als der Bildschirm */
+@media (max-height: 500px) and (orientation: landscape) {
+	.topbar { display: none; }
+	.hero { padding-block: 1.5rem; }
+	.hero h1 { font-size: clamp(1.8rem, 1.2rem + 3vw, 2.6rem); }
+	.drawer { inset: var(--drawer-top, var(--header-h)) 0 0; }
+	.drawer__list a { padding-block: .6rem; font-size: 1.15rem; }
+	.callbar a { flex-direction: row; justify-content: center; gap: .5rem; padding-block: .45rem; }
+	.stack { height: 300px; }
+}
+
+/* Tablet hochkant (761-960 px): Formular nicht über die volle Breite */
+@media (min-width: 640px) and (max-width: 960px) {
+	.hero__form { max-width: 620px; }
+	.hero__content { max-width: 680px; }
+	.service-body { grid-template-columns: 1fr; }
+	.service-aside { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.service-aside .panel--dark { grid-column: 1 / -1; }
+}
+
+/* Große Bildschirme: Inhalt nicht verloren in der Breite */
+@media (min-width: 1800px) {
+	:root { --container: 1360px; }
+	html { font-size: 106.25%; }
+}
+
+/* ----------------------------------------------------------------------
+   3D-Bühne im Seitenkopf auf Handy und Tablet
+   Auf großen Bildschirmen liegt die Szene hinter dem ganzen Kopf. Darunter
+   bekommt sie zwischen Text und Formular eine eigene Bühne in voller
+   Breite - statt nur als blasser Streifen am Rand zu erscheinen.
+   ---------------------------------------------------------------------- */
+@media (max-width: 960px) {
+	.hero__layout > .scene3d,
+	.service-hero .hero__layout > .scene3d {
+		position: relative;
+		inset: auto;
+		z-index: 0;
+		height: clamp(200px, 52vw, 340px);
+		margin: -.5rem calc(-1 * var(--gutter)) -1rem;
+		opacity: 1;
+		mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 78%, transparent 100%);
+	}
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+	.hero__layout > .scene3d { height: 180px; }
+}
+
+/* ----------------------------------------------------------------------
+   Notdienst- und Abschluss-Band: 3D auf allen Größen
+   ---------------------------------------------------------------------- */
+@media (max-width: 860px) {
+	.emergency__inner { grid-template-columns: 1fr; gap: var(--s-m); }
+
+	.emergency__stage {
+		height: clamp(170px, 46vw, 240px);
+		margin-inline: calc(-1 * var(--gutter));
+		place-items: center;
+	}
+
+	.emergency__stage .scene3d { display: block; inset: 0; }
+	.emergency__actions { justify-items: stretch; }
+	.emergency__actions .btn { width: 100%; }
+	.emergency__more { justify-content: center; }
+}
+
+@media (min-width: 861px) and (max-width: 1100px) {
+	.cta__inner {
+		grid-template-columns: minmax(0, 1fr) 240px;
+		grid-template-areas: "text stage" "actions stage";
+	}
+
+	.cta__inner > div:first-child { grid-area: text; }
+	.cta__stage { display: block; grid-area: stage; height: 280px; }
+	.cta__actions { grid-area: actions; grid-template-columns: repeat(2, max-content); }
+}
+
+@media (max-width: 860px) {
+	.cta__stage {
+		display: block;
+		height: clamp(190px, 50vw, 260px);
+		margin: -.5rem calc(-1 * var(--gutter));
+	}
+
+	.cta__stage .scene3d { inset: 0; }
+}

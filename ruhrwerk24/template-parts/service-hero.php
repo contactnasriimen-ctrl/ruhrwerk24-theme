@@ -38,11 +38,6 @@ $rw_lead  = $args['lead'] ?? (string) get_post_meta( $rw_id, '_rw_short_claim', 
 	</div>
 	<div class="bg-anim" aria-hidden="true"><span></span><span></span><span></span></div>
 
-	<?php if ( ! $rw_hero ) : ?>
-		<?php // Ohne Foto übernimmt das 3D-Rohrnetz die Bühne. ?>
-		<div class="scene3d" data-scene3d="service" aria-hidden="true"></div>
-	<?php endif; ?>
-
 	<div class="container service-hero__inner">
 		<?php rw24_breadcrumbs(); ?>
 
@@ -75,6 +70,11 @@ $rw_lead  = $args['lead'] ?? (string) get_post_meta( $rw_id, '_rw_short_claim', 
 					</a>
 				</div>
 			</div>
+
+			<?php if ( ! $rw_hero ) : ?>
+				<?php // Ohne Foto übernimmt das 3D-Rohrnetz die Bühne (auf dem Handy zwischen Text und Formular). ?>
+				<div class="scene3d" data-scene3d="service" aria-hidden="true"></div>
+			<?php endif; ?>
 
 			<div class="hero__form" id="anfrage">
 				<?php rw24_render_form( 'hero' ); ?>

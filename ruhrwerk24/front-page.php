@@ -24,14 +24,6 @@ $rw_hero_img = (int) get_theme_mod( 'rw_hero_image', 0 );
 		<div class="bg-anim" aria-hidden="true"><span></span><span></span><span></span></div>
 		<div class="bg-grid" aria-hidden="true"></div>
 
-		<?php
-		// 3D-Rohrnetz (assets/js/hero3d.js) - nur ohne eigenes Hintergrundfoto,
-		// damit Foto und Szene sich nicht gegenseitig die Wirkung nehmen.
-		if ( ! $rw_hero_img ) :
-			?>
-			<div class="scene3d" data-scene3d="hero" aria-hidden="true"></div>
-		<?php endif; ?>
-
 		<div class="container hero__inner">
 			<div class="hero__layout">
 
@@ -76,6 +68,15 @@ $rw_hero_img = (int) get_theme_mod( 'rw_hero_image', 0 );
 						<?php endfor; ?>
 					</dl>
 				</div>
+
+				<?php
+				// 3D-Rohrnetz (assets/js/hero3d.js) - nur ohne eigenes Hintergrundfoto.
+				// Groß: liegt hinter dem ganzen Kopf. Handy/Tablet: eigene Bühne
+				// zwischen Text und Formular (siehe main.css, Abschnitt 2.4).
+				if ( ! $rw_hero_img ) :
+					?>
+					<div class="scene3d" data-scene3d="hero" aria-hidden="true"></div>
+				<?php endif; ?>
 
 				<?php // Das Formular sitzt direkt im Hero - kein Klick bis zur ersten Frage. ?>
 				<div class="hero__form" id="anfrage">

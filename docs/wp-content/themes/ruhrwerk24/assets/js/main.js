@@ -167,10 +167,24 @@
 		}
 	};
 
-	// Nebenszenen (Ventil, Tropfen) nur auf großen Bildschirmen - auf dem
-	// Handy reicht eine Szene im Seitenkopf, das schont Akku und Grafikchip.
+	// Nebenszenen (Ventil, Tropfen) starten auf Handy und Tablet erst, wenn
+	// man in ihre Nähe scrollt - so lädt der Seitenaufbau nur eine Szene.
 	const narrow = window.matchMedia('(max-width: 960px)').matches;
-	const wanted = Array.from(scenes).filter((el) => !(narrow && el.hasAttribute('data-scene3d-desktop')));
+	const wanted = Array.from(scenes);
+
+	const mountWhenNear = (m, el) => {
+		if (!narrow || !el.hasAttribute('data-scene3d-desktop') || !('IntersectionObserver' in window)) {
+			m.mount(el, { still: reduceMotion });
+			return;
+		}
+		const near = new IntersectionObserver(([entry]) => {
+			if (entry.isIntersecting) {
+				near.disconnect();
+				m.mount(el, { still: reduceMotion });
+			}
+		}, { rootMargin: '400px 0px' });
+		near.observe(el);
+	};
 
 	// 3D-Hintergrund der ganzen Seite (bg3d.js) - feste Ebene hinter den
 	// hellen Abschnitten. Läuft auch auf dem Handy, dort mit weniger Teilen.
@@ -189,7 +203,7 @@
 
 	if (wanted.length && window.rw24 && window.rw24.scene3d && canRender3D()) {
 		const load = () => import(window.rw24.scene3d)
-			.then((m) => wanted.forEach((el) => m.mount(el, { still: reduceMotion })))
+			.then((m) => wanted.forEach((el) => mountWhenNear(m, el)))
 			.catch(() => {}); // Ohne Szene bleibt der CSS-Hintergrund - kein Fehler für Besucher.
 
 		if ('requestIdleCallback' in window) {
