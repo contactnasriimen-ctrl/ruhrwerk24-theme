@@ -76,6 +76,11 @@
 
 	/* ------------------------------------------------------------------
 	 * Einblenden beim Scrollen
+	 *
+	 * Inhalte sind von Haus aus sichtbar. Erst wenn dieses Script läuft,
+	 * setzt es "js-ready" - nur dann blendet main.css sie zum Einfliegen
+	 * aus. Scheitert das Script (alter Browser, Blocker, Abbruch), bleibt
+	 * jeder Text lesbar.
 	 * ---------------------------------------------------------------- */
 	const reveals = doc.querySelectorAll('.reveal:not(.is-in)');
 
@@ -94,7 +99,36 @@
 			{ rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
 		);
 
-		reveals.forEach((el) => io.observe(el));
+		// Was schon im Bild ist, bleibt einfach stehen - kein Aus- und Einblenden.
+		// Sehr hohe Elemente (lange Texte auf dem Handy) ebenfalls: Sie würden
+		// sonst erst spät erscheinen.
+		reveals.forEach((el) => {
+			const r = el.getBoundingClientRect();
+			if (r.top < window.innerHeight || r.height > window.innerHeight * 0.9) {
+				el.classList.add('is-in');
+			} else {
+				io.observe(el);
+			}
+		});
+
+		doc.documentElement.classList.add('js-ready');
+
+		// Sicherheitsnetz: Was nach dem Laden in 4 s noch nicht erschienen ist,
+		// obwohl es im Bild liegt (z. B. weil der Browser ein Ereignis
+		// verschluckt hat), wird direkt gezeigt.
+		const sweep = () => {
+			doc.querySelectorAll('.reveal:not(.is-in), .split-words.is-split:not(.is-in)').forEach((el) => {
+				const r = el.getBoundingClientRect();
+				if (r.top < window.innerHeight && r.bottom > 0) {
+					el.classList.add('is-in');
+				}
+			});
+		};
+		window.addEventListener('scroll', () => {
+			window.clearTimeout(sweep.t);
+			sweep.t = window.setTimeout(sweep, 700);
+		}, { passive: true });
+		window.setTimeout(sweep, 4000);
 	}
 
 	/* ------------------------------------------------------------------

@@ -1889,7 +1889,7 @@ a.chip:hover { border-color: var(--accent); background: var(--accent-soft); colo
 .faq { perspective: 1400px; }
 
 @media (prefers-reduced-motion: no-preference) {
-	.js .reveal {
+	.js-ready .reveal {
 		opacity: 0;
 		translate: 0 34px;
 		rotate: x 14deg;
@@ -1897,11 +1897,11 @@ a.chip:hover { border-color: var(--accent); background: var(--accent-soft); colo
 		transition: opacity .8s var(--ease), translate .9s var(--ease), rotate .9s var(--ease), transform .6s var(--ease), box-shadow .3s var(--ease), border-color .3s;
 	}
 
-	.js .reveal[data-delay="2"] { transition-delay: .09s, .09s, .09s, 0s, 0s, 0s; }
-	.js .reveal[data-delay="3"] { transition-delay: .18s, .18s, .18s, 0s, 0s, 0s; }
-	.js .reveal[data-delay="4"] { transition-delay: .27s, .27s, .27s, 0s, 0s, 0s; }
+	.js-ready .reveal[data-delay="2"] { transition-delay: .09s, .09s, .09s, 0s, 0s, 0s; }
+	.js-ready .reveal[data-delay="3"] { transition-delay: .18s, .18s, .18s, 0s, 0s, 0s; }
+	.js-ready .reveal[data-delay="4"] { transition-delay: .27s, .27s, .27s, 0s, 0s, 0s; }
 
-	.js .reveal.is-in { opacity: 1; translate: none; rotate: none; }
+	.js-ready .reveal.is-in { opacity: 1; translate: none; rotate: none; }
 }
 
 /* ======================================================================
@@ -2091,7 +2091,7 @@ a.chip:hover { transform: translateY(-2px); box-shadow: 0 6px 14px -8px var(--ac
 	.on-dark h1,
 	.on-dark h2 { color: #000; }
 	.section { padding-block: 1rem; }
-	.js .reveal { opacity: 1 !important; transform: none !important; }
+	.js-ready .reveal { opacity: 1 !important; transform: none !important; }
 }
 
 /* ======================================================================
@@ -2964,4 +2964,31 @@ a.eyebrow,
 	}
 
 	.cta__stage .scene3d { inset: 0; }
+}
+
+/* ======================================================================
+   2.4.2 - Lesbarkeit auf dem Handy
+   Auf schmalen Bildschirmen ziehen die 3D-Teile zwangsläufig hinter dem
+   Text vorbei. Helle Abschnitte bekommen dort einen dichteren Grund, der
+   Hintergrund bleibt als Tiefe sichtbar, stört aber keinen Satz.
+   ====================================================================== */
+@media (max-width: 960px) {
+	.has-bg3d main > section:not(.on-dark):not(.usp):not(.marquee),
+	.has-bg3d main.section {
+		background-color: rgb(237 241 246 / .8);
+	}
+
+	.has-bg3d .section--grey,
+	.has-bg3d .why { background-color: rgb(232 237 243 / .84); }
+
+	/* Der weiche Schein hinter Texten ist hier unnötig. */
+	.has-bg3d .head::before,
+	.has-bg3d .about__text::before,
+	.has-bg3d .service-body .prose::before { display: none; }
+
+	/* Fließtext etwas dunkler für mehr Kontrast im Freien. */
+	.head p,
+	.about__text p,
+	.card__text,
+	.prose { color: #3d4757; }
 }
