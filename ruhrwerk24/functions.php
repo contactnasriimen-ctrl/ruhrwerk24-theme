@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'RW24_VERSION', '2.6.0' );
+define( 'RW24_VERSION', '2.7.0' );
 define( 'RW24_DIR', get_template_directory() );
 define( 'RW24_URI', get_template_directory_uri() );
 
@@ -82,16 +82,26 @@ add_filter( 'image_size_names_choose', 'rw24_image_size_names' );
  * defer und braucht kein jQuery.
  */
 function rw24_assets(): void {
-	wp_enqueue_style( 'rw24-fonts', RW24_URI . '/assets/css/fonts.css', array(), RW24_VERSION );
-	wp_enqueue_style( 'rw24-tokens', RW24_URI . '/assets/css/tokens.css', array( 'rw24-fonts' ), RW24_VERSION );
-	wp_enqueue_style( 'rw24-main', RW24_URI . '/assets/css/main.css', array( 'rw24-tokens' ), RW24_VERSION );
+	$dist = rw24_use_dist();
 
-	// Farben aus dem Customizer überschreiben die Standardwerte der Tokens.
-	wp_add_inline_style( 'rw24-tokens', rw24_color_css() );
+	if ( $dist ) {
+		// Gebaut mit scripts/build-assets.mjs: eine minifizierte CSS-Datei.
+		wp_enqueue_style( 'rw24-main', RW24_URI . '/assets/dist/app.css', array(), RW24_VERSION );
+		wp_add_inline_style( 'rw24-main', rw24_color_css() );
+	} else {
+		wp_enqueue_style( 'rw24-fonts', RW24_URI . '/assets/css/fonts.css', array(), RW24_VERSION );
+		wp_enqueue_style( 'rw24-tokens', RW24_URI . '/assets/css/tokens.css', array( 'rw24-fonts' ), RW24_VERSION );
+		wp_enqueue_style( 'rw24-main', RW24_URI . '/assets/css/main.css', array( 'rw24-tokens' ), RW24_VERSION );
+
+		// Farben aus dem Customizer überschreiben die Standardwerte der Tokens.
+		wp_add_inline_style( 'rw24-tokens', rw24_color_css() );
+	}
+
+	$js = $dist ? '/assets/dist/' : '/assets/js/';
 
 	wp_enqueue_script(
 		'rw24-main',
-		RW24_URI . '/assets/js/main.js',
+		RW24_URI . $js . 'main.js',
 		array(),
 		RW24_VERSION,
 		array(
@@ -119,8 +129,8 @@ function rw24_assets(): void {
 		'rw24-main',
 		'window.rw24=' . wp_json_encode(
 			array(
-				'scene3d' => add_query_arg( 'ver', RW24_VERSION, RW24_URI . '/assets/js/hero3d.js' ),
-				'bg3d'    => add_query_arg( 'ver', RW24_VERSION, RW24_URI . '/assets/js/bg3d.js' ),
+				'scene3d' => add_query_arg( 'ver', RW24_VERSION, RW24_URI . ( $dist ? '/assets/dist/3d/' : '/assets/js/' ) . 'hero3d.js' ),
+				'bg3d'    => add_query_arg( 'ver', RW24_VERSION, RW24_URI . ( $dist ? '/assets/dist/3d/' : '/assets/js/' ) . 'bg3d.js' ),
 			)
 		) . ';',
 		'before'
@@ -135,6 +145,20 @@ function rw24_assets(): void {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'rw24_assets', 20 );
+
+/**
+ * Gebaute, minifizierte Assets nutzen?
+ *
+ * Ja, sobald assets/dist/ existiert - außer bei SCRIPT_DEBUG, damit man
+ * beim Entwickeln die lesbaren Quellen bekommt.
+ */
+function rw24_use_dist(): bool {
+	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		return false;
+	}
+
+	return file_exists( RW24_DIR . '/assets/dist/app.css' ) && file_exists( RW24_DIR . '/assets/dist/3d/hero3d.js' );
+}
 
 /**
  * Die Hausschrift vorladen - sie trägt jede Überschrift über dem Falz.
@@ -232,3 +256,6 @@ require_once RW24_DIR . '/inc/cities.php';
 require_once RW24_DIR . '/inc/city-pages.php';
 require_once RW24_DIR . '/inc/sitemap.php';
 require_once RW24_DIR . '/inc/seo.php';
+require_once RW24_DIR . '/inc/legal.php';
+require_once RW24_DIR . '/inc/consent.php';
+require_once RW24_DIR . '/inc/hashtags.php';

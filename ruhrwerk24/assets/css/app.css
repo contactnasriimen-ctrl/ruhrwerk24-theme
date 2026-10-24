@@ -1,0 +1,8 @@
+/*
+ * Einstieg für den Build (scripts/build-assets.mjs): bündelt alle
+ * Stylesheets zu assets/dist/app.css. Im Theme selbst wird diese Datei
+ * nicht geladen.
+ */
+@import "fonts.css";
+@import "tokens.css";
+@import "main.css";

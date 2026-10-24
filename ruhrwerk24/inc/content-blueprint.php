@@ -17,7 +17,12 @@ defined( 'ABSPATH' ) || exit;
  * @return array<string, array{name: string, description: string}>
  */
 function rw24_blueprint_groups(): array {
+	// Umzug & Transport steht seit 2.7 vorn - das Kerngeschäft zuerst.
 	return array(
+		'transport'    => array(
+			'name'        => __( 'Umzug & Transport', 'ruhrwerk24' ),
+			'description' => __( 'Privatumzug, Firmenumzug oder ein einzelnes Möbelstück: Wir packen, tragen, fahren und bauen wieder auf – mit eigenem Team und Festpreis.', 'ruhrwerk24' ),
+		),
 		'kanaltechnik' => array(
 			'name'        => __( 'Kanaltechnik', 'ruhrwerk24' ),
 			'description' => __( 'Verstopfung, Wurzeleinwuchs, undichte Leitungen: Wir finden die Ursache mit der Kamera und beheben sie – meist ohne aufzugraben.', 'ruhrwerk24' ),
@@ -29,10 +34,6 @@ function rw24_blueprint_groups(): array {
 		'ausbau'       => array(
 			'name'        => __( 'Ausbau & Räumung', 'ruhrwerk24' ),
 			'description' => __( 'Vom Bad bis zum Keller: Wir bauen aus, renovieren und räumen – sauber, termintreu und zum Festpreis.', 'ruhrwerk24' ),
-		),
-		'transport'    => array(
-			'name'        => __( 'Umzug & Transport', 'ruhrwerk24' ),
-			'description' => __( 'Privatumzug, Firmenumzug oder ein einzelnes Möbelstück: Wir packen, tragen, fahren und bauen wieder auf – mit eigenem Team und Festpreis.', 'ruhrwerk24' ),
 		),
 	);
 }

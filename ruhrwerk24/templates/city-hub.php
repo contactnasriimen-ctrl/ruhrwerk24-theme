@@ -101,6 +101,8 @@ get_header();
 	);
 	?>
 
+	<?php get_template_part( 'template-parts/hashtags' ); ?>
+
 	<?php
 	get_template_part(
 		'template-parts/cta',

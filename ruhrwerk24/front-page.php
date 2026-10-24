@@ -89,11 +89,12 @@ $rw_hero_img = (int) get_theme_mod( 'rw_hero_image', 0 );
 
 	<?php get_template_part( 'template-parts/usp' ); ?>
 
+	<?php // Umzug & Transport zuerst - mit 3D-Transporter direkt unter dem Seitenkopf. ?>
+	<?php get_template_part( 'template-parts/transport-band' ); ?>
+
 	<?php get_template_part( 'template-parts/marquee' ); ?>
 
 	<?php get_template_part( 'template-parts/service-groups' ); ?>
-
-	<?php get_template_part( 'template-parts/transport-band' ); ?>
 
 	<?php get_template_part( 'template-parts/why' ); ?>
 

@@ -71,14 +71,19 @@ foreach ( $maps[1] as $map ) {
 }
 $pages = array_values( array_unique( $pages ) );
 
+// Per JavaScript nachgeladene Dateien stehen in keinem HTML-Tag - Quellen
+// und gebaute 3D-Dateien (Namen mit Prüfsumme) deshalb von der Platte lesen.
+$theme  = dirname( __DIR__ ) . '/ruhrwerk24';
 $assets = array(
-	// Werden per JavaScript nachgeladen und stehen in keinem HTML-Tag.
 	'/wp-content/themes/ruhrwerk24/assets/js/hero3d.js',
 	'/wp-content/themes/ruhrwerk24/assets/js/bg3d.js',
 	'/wp-content/themes/ruhrwerk24/assets/vendor/three/build/three.module.min.js',
 	'/wp-content/themes/ruhrwerk24/assets/vendor/three/jsm/environments/RoomEnvironment.js',
 	'/wp-content/themes/ruhrwerk24/assets/vendor/three/LICENSE',
 );
+foreach ( glob( $theme . '/assets/dist/3d/*.js' ) ?: array() as $built ) {
+	$assets[] = '/wp-content/themes/ruhrwerk24/assets/dist/3d/' . basename( $built );
+}
 
 $banner = '<div style="position:relative;z-index:200;background:#F4651A;color:#061629;font:600 13px/1.4 system-ui,sans-serif;text-align:center;padding:7px 12px">'
 	. 'Demo des WordPress-Themes – Kontaktdaten sind Platzhalter, das Formular sendet nichts. '
@@ -110,7 +115,12 @@ $rewrite_html = static function ( string $html ) use ( $src, $base, $banner, $de
 	$html = str_replace( '</body>', $demo_js . '</body>', $html );
 
 	// Adressen auf GitHub Pages.
-	$html = str_replace( array( $src, str_replace( '/', '\/', $src ) ), array( $base, str_replace( '/', '\/', $base ) ), $html );
+	// Auch URL-kodiert (Teilen-Links) und JSON-maskiert.
+	$html = str_replace(
+		array( rawurlencode( $src ), $src, str_replace( '/', '\/', $src ) ),
+		array( rawurlencode( $base ), $base, str_replace( '/', '\/', $base ) ),
+		$html
+	);
 
 	return $html;
 };

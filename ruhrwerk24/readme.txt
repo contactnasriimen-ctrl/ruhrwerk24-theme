@@ -37,6 +37,9 @@ Theme für Ruhrwerk24 – Handwerk, Sanierung und Notdienst in NRW.
 * Seit 2.5: Gruppe "Umzug & Transport" (Umzug, Firmenumzug, Transporte)
   mit 3D-Transporter. Updates ergänzen neue Leistungen einmalig, gelöschte
   Leistungen werden nicht wieder angelegt.
+* Seit 2.7: Umzug & Transport zuerst, Notdienst in Orange, Impressum und
+  Datenschutz aus dem Customizer (Vorlage, bitte prüfen lassen),
+  Cookie-Hinweis, Hashtags & Teilen, minifizierte Assets in assets/dist/.
 * Anfrageformular mit acht Schritten, ohne Plugin, ohne Captcha
   (Honeypot, signierter Zeitstempel, Limit pro IP). Funktioniert auch
   ohne JavaScript.

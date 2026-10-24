@@ -177,7 +177,7 @@ function rw24_lead_column( string $column, int $id ): void {
 			$urgent = 'notfall' === ( $d['urgency'] ?? '' );
 			printf(
 				'<span style="%s">%s</span>',
-				$urgent ? 'color:#b32d2e;font-weight:600' : '',
+				$urgent ? 'color:#c2410c;font-weight:600' : '',
 				esc_html( rw24_choice_label( 'urgency', $d['urgency'] ?? '' ) )
 			);
 			break;

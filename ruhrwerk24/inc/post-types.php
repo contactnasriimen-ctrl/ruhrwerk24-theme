@@ -64,7 +64,7 @@ function rw24_register_content_types(): void {
 			'type'              => 'integer',
 			'single'            => true,
 			'default'           => 0,
-			'sanitize_callback' => 'absint',
+			'sanitize_callback' => static fn( $value ): int => (int) $value, // negativ erlaubt: -10 stellt eine Gruppe nach vorn
 		)
 	);
 }
@@ -102,7 +102,7 @@ function rw24_group_order_field( $term = null ): void {
 	<tr class="form-field">
 		<th scope="row"><label for="rw-order"><?php esc_html_e( 'Reihenfolge', 'ruhrwerk24' ); ?></label></th>
 		<td>
-			<input type="number" min="0" step="1" name="rw_order" id="rw-order" value="<?php echo esc_attr( (string) $value ); ?>" style="width:6rem">
+			<input type="number" step="1" name="rw_order" id="rw-order" value="<?php echo esc_attr( (string) $value ); ?>" style="width:6rem">
 			<p class="description"><?php esc_html_e( 'Kleinere Zahlen stehen auf der Website weiter oben.', 'ruhrwerk24' ); ?></p>
 		</td>
 	</tr>
@@ -117,7 +117,7 @@ function rw24_group_order_field_add(): void {
 	?>
 	<div class="form-field">
 		<label for="rw-order"><?php esc_html_e( 'Reihenfolge', 'ruhrwerk24' ); ?></label>
-		<input type="number" min="0" step="1" name="rw_order" id="rw-order" value="0">
+		<input type="number" step="1" name="rw_order" id="rw-order" value="0">
 	</div>
 	<?php
 }
@@ -133,7 +133,7 @@ function rw24_group_order_save( int $term_id ): void {
 		return;
 	}
 
-	update_term_meta( $term_id, '_rw_order', absint( $_POST['rw_order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	update_term_meta( $term_id, '_rw_order', intval( $_POST['rw_order'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	rw24_flush_service_cache();
 }
 add_action( 'created_rw_service_group', 'rw24_group_order_save' );

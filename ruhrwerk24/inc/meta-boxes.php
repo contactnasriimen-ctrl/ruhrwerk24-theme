@@ -17,6 +17,7 @@ function rw24_register_service_meta(): void {
 		'_rw_icon'        => array( 'string', 'sanitize_key' ),
 		'_rw_features'    => array( 'string', 'sanitize_textarea_field' ),
 		'_rw_faq'         => array( 'string', 'sanitize_textarea_field' ),
+		'_rw_hashtags'    => array( 'string', 'sanitize_text_field' ),
 	);
 
 	foreach ( $fields as $key => [ $type, $sanitize ] ) {
@@ -63,6 +64,7 @@ function rw24_render_service_box( WP_Post $post ): void {
 	$icon      = rw24_service_icon( $post->ID );
 	$features  = (string) get_post_meta( $post->ID, '_rw_features', true );
 	$faq       = (string) get_post_meta( $post->ID, '_rw_faq', true );
+	$hashtags  = (string) get_post_meta( $post->ID, '_rw_hashtags', true );
 	?>
 	<style>
 		.rw24-box p { margin: 0 0 1.25rem; }
@@ -106,6 +108,12 @@ function rw24_render_service_box( WP_Post $post ): void {
 			<textarea id="rw-faq" name="rw_faq" rows="6" placeholder="<?php esc_attr_e( 'Was kostet das? | Sie erhalten vor Arbeitsbeginn einen Festpreis.', 'ruhrwerk24' ); ?>"><?php echo esc_textarea( $faq ); ?></textarea>
 			<span class="description"><?php esc_html_e( 'Eine Frage pro Zeile, Antwort nach einem senkrechten Strich ( | ). Wird auch für Google als FAQ ausgezeichnet.', 'ruhrwerk24' ); ?></span>
 		</p>
+
+		<p>
+			<label for="rw-hashtags"><?php esc_html_e( 'Eigene Hashtags', 'ruhrwerk24' ); ?></label>
+			<input type="text" id="rw-hashtags" name="rw_hashtags" value="<?php echo esc_attr( $hashtags ); ?>" placeholder="#Rohrbruch #Wasserschaden">
+			<span class="description"><?php esc_html_e( 'Optional, mit Leerzeichen getrennt. Hashtags aus Leistung, Stadt und Customizer werden automatisch ergänzt.', 'ruhrwerk24' ); ?></span>
+		</p>
 	</div>
 	<?php
 }
@@ -132,6 +140,7 @@ function rw24_save_service_box( int $post_id ): void {
 	update_post_meta( $post_id, '_rw_emergency', isset( $_POST['rw_emergency'] ) ? '1' : '' );
 	update_post_meta( $post_id, '_rw_features', $text( 'rw_features' ) );
 	update_post_meta( $post_id, '_rw_faq', $text( 'rw_faq' ) );
+	update_post_meta( $post_id, '_rw_hashtags', $text( 'rw_hashtags' ) );
 
 	$icon = sanitize_key( $text( 'rw_icon' ) );
 	update_post_meta( $post_id, '_rw_icon', array_key_exists( $icon, rw24_icon_choices() ) ? $icon : 'tool' );

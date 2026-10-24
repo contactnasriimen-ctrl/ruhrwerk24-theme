@@ -403,7 +403,7 @@ function buildDrops(ctx) {
 	}
 
 	// Blaulicht: zwei rotierende Lichter, rot und blau.
-	const red = new THREE.PointLight(0xff2d48, 0, 14, 1.6);
+	const red = new THREE.PointLight(0xff7a1a, 0, 14, 1.6); // Warnlicht in Orange statt Rot
 	const blue = new THREE.PointLight(0x3d8bff, 0, 14, 1.6);
 	scene.add(red, blue);
 
@@ -1036,7 +1036,7 @@ export function mount(host, opts = {}) {
 	const color = (name, fallback) => new THREE.Color((css.getPropertyValue(name) || '').trim() || fallback);
 	const navy = color('--navy', '#0A2342');
 	const accent = color('--accent', '#F4651A');
-	const emergency = color('--emergency', '#D7263D');
+	const emergency = color('--emergency', '#C2410C');
 
 	let renderer;
 	try {

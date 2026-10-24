@@ -341,6 +341,132 @@
 	}
 
 	/* ------------------------------------------------------------------
+	 * Cookie-Hinweis
+	 * Auswahl liegt im localStorage (rw24-consent). Zurückgehaltene Dienste
+	 * (<template data-rw-consent="kategorie">) laufen erst nach Zustimmung.
+	 * Andere Scripts können window.rw24Consent.has('statistics') abfragen
+	 * oder auf das Ereignis "rw24:consent" hören.
+	 * ---------------------------------------------------------------- */
+	const consentBox = doc.getElementById('consent');
+	const CONSENT_KEY = 'rw24-consent';
+	const CONSENT_VERSION = 1;
+
+	const readConsent = () => {
+		try {
+			const stored = JSON.parse(window.localStorage.getItem(CONSENT_KEY) || 'null');
+			return stored && stored.v === CONSENT_VERSION ? stored : null;
+		} catch (e) {
+			return null;
+		}
+	};
+
+	const activateServices = (choice) => {
+		doc.querySelectorAll('template[data-rw-consent]').forEach((tpl) => {
+			if (!choice[tpl.dataset.rwConsent] || tpl.dataset.done) {
+				return;
+			}
+			tpl.dataset.done = '1';
+			// Scripts aus <template> sind inaktiv - neu erzeugen, damit sie laufen.
+			Array.from(tpl.content.childNodes).forEach((node) => {
+				if (node.nodeName === 'SCRIPT') {
+					const s = doc.createElement('script');
+					Array.from(node.attributes).forEach((a) => s.setAttribute(a.name, a.value));
+					s.textContent = node.textContent;
+					doc.body.appendChild(s);
+				} else {
+					doc.body.appendChild(node.cloneNode(true));
+				}
+			});
+		});
+	};
+
+	window.rw24Consent = {
+		get: readConsent,
+		has: (cat) => !!(readConsent() || {})[cat],
+		open: () => {},
+	};
+
+	if (consentBox) {
+		const switches = Array.from(consentBox.querySelectorAll('[data-consent-cat]'));
+		const options = consentBox.querySelector('.consent__options');
+		const moreBtn = consentBox.querySelector('[data-consent="settings"]');
+		const saveBtn = consentBox.querySelector('[data-consent="save"]');
+
+		const save = (choice) => {
+			const value = Object.assign({ v: CONSENT_VERSION, ts: Date.now(), necessary: true }, choice);
+			try {
+				window.localStorage.setItem(CONSENT_KEY, JSON.stringify(value));
+			} catch (e) {
+				// Speicher gesperrt (privater Modus): Auswahl gilt für diesen Aufruf.
+			}
+			consentBox.classList.remove('is-open');
+			window.setTimeout(() => (consentBox.hidden = true), reduceMotion ? 0 : 400);
+			activateServices(value);
+			doc.dispatchEvent(new CustomEvent('rw24:consent', { detail: value }));
+		};
+
+		const open = (showOptions = false) => {
+			const current = readConsent() || {};
+			switches.forEach((s) => {
+				if (!s.disabled) {
+					s.checked = !!current[s.dataset.consentCat];
+				}
+			});
+			options.hidden = !showOptions;
+			saveBtn.hidden = !showOptions;
+			moreBtn.setAttribute('aria-expanded', String(showOptions));
+			consentBox.hidden = false;
+			requestAnimationFrame(() => consentBox.classList.add('is-open'));
+		};
+
+		window.rw24Consent.open = open;
+
+		const all = (value) => Object.fromEntries(switches.map((s) => [s.dataset.consentCat, s.disabled ? true : value]));
+
+		consentBox.querySelector('[data-consent="accept"]').addEventListener('click', () => save(all(true)));
+		consentBox.querySelector('[data-consent="reject"]').addEventListener('click', () => save(all(false)));
+		saveBtn.addEventListener('click', () => save(Object.fromEntries(switches.map((s) => [s.dataset.consentCat, s.checked]))));
+		moreBtn.addEventListener('click', () => {
+			const show = options.hidden;
+			options.hidden = !show;
+			saveBtn.hidden = !show;
+			moreBtn.setAttribute('aria-expanded', String(show));
+		});
+
+		doc.querySelectorAll('[data-consent-open]').forEach((btn) => btn.addEventListener('click', () => open(true)));
+
+		const existing = readConsent();
+		if (existing) {
+			activateServices(existing);
+		} else {
+			// Kurz nach dem Laden einblenden, damit der Seitenaufbau nicht springt.
+			window.setTimeout(() => open(false), 900);
+		}
+	}
+
+	/* ------------------------------------------------------------------
+	 * "Link kopieren" in der Teilen-Leiste
+	 * ---------------------------------------------------------------- */
+	doc.querySelectorAll('[data-copy]').forEach((btn) => {
+		btn.addEventListener('click', async () => {
+			const label = btn.querySelector('span');
+			const before = label.textContent;
+			try {
+				await navigator.clipboard.writeText(btn.dataset.copy);
+			} catch (e) {
+				window.prompt('', btn.dataset.copy);
+				return;
+			}
+			label.textContent = btn.dataset.copied;
+			btn.classList.add('is-done');
+			window.setTimeout(() => {
+				label.textContent = before;
+				btn.classList.remove('is-done');
+			}, 2000);
+		});
+	});
+
+	/* ------------------------------------------------------------------
 	 * Footer-Schriftzug: Glanzlicht folgt der Maus, Buchstaben kippen leicht
 	 * ---------------------------------------------------------------- */
 	const mark = doc.querySelector('.footer__mark');

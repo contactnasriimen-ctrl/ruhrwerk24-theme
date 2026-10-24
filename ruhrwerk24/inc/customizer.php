@@ -20,7 +20,7 @@ function rw24_defaults(): array {
 		// Farben.
 		'rw_color_primary'   => '#0A2342',
 		'rw_color_accent'    => '#F4651A',
-		'rw_color_emergency' => '#D7263D',
+		'rw_color_emergency' => '#C2410C',
 
 		// Kontakt.
 		'rw_owner'           => 'Ruhrwerk24',
@@ -34,14 +34,14 @@ function rw24_defaults(): array {
 
 		// Startseite.
 		'rw_hero_eyebrow'    => 'Notdienst aktiv – heute noch vor Ort',
-		'rw_hero_title'      => 'Handwerk für ganz NRW. Schnell, sauber, zum Festpreis.',
-		'rw_hero_text'       => 'Rohrreinigung, Haustechnik und Ausbau aus einer Hand. Beschreiben Sie kurz, worum es geht – wir melden uns mit einem verbindlichen Angebot.',
+		'rw_hero_title'      => 'Umzug & Handwerk für ganz NRW. Schnell, sauber, zum Festpreis.',
+		'rw_hero_text'       => 'Umzug, Transport, Rohrreinigung, Haustechnik und Ausbau aus einer Hand. Beschreiben Sie kurz, worum es geht – wir melden uns mit einem verbindlichen Angebot.',
 		'rw_hero_image'      => 0,
 		'rw_fact_1_value'    => '24/7',
 		'rw_fact_1_label'    => 'Notdienst',
 		'rw_fact_2_value'    => '60',
 		'rw_fact_2_label'    => 'Minuten bis vor Ort',
-		'rw_fact_3_value'    => '8',
+		'rw_fact_3_value'    => '11',
 		'rw_fact_3_label'    => 'Gewerke, ein Ansprechpartner',
 
 		// Über uns.
@@ -55,6 +55,24 @@ function rw24_defaults(): array {
 		// Anfragen.
 		'rw_lead_recipient'  => '',
 		'rw_lead_retention'  => 12,
+
+		// Rechtliches (Impressum, Datenschutz). Leer = Zeile entfällt.
+		'rw_legal_rep'        => '',
+		'rw_legal_register'   => '',
+		'rw_legal_vat'        => '',
+		'rw_legal_profession' => '',
+		'rw_legal_chamber'    => '',
+		'rw_legal_insurance'  => '',
+		'rw_legal_hosting'    => '',
+		'rw_legal_dpo'        => '',
+
+		// Cookie-Hinweis und optionale Dienste.
+		'rw_consent_enabled'    => 1,
+		'rw_consent_stats_name' => '',
+		'rw_consent_stats_code' => '',
+
+		// Hashtags für Teilen und Social Media.
+		'rw_hashtags' => '#Ruhrwerk24 #HandwerkNRW #NotdienstNRW #UmzugNRW',
 	);
 }
 
@@ -190,6 +208,63 @@ function rw24_customize_register( WP_Customize_Manager $wp_customize ): void {
 
 	$add_text( 'rw24_leads', 'rw_lead_recipient', __( 'Empfänger für neue Anfragen', 'ruhrwerk24' ), 'email', __( 'Leer = die E-Mail-Adresse aus den Kontaktdaten.', 'ruhrwerk24' ) );
 	$add_text( 'rw24_leads', 'rw_lead_retention', __( 'Anfragen automatisch löschen nach (Monaten)', 'ruhrwerk24' ), 'number', __( 'DSGVO: Daten nicht länger als nötig speichern. 0 = nie automatisch löschen.', 'ruhrwerk24' ) );
+
+	// Rechtliches: füllt Impressum und Datenschutzerklärung automatisch.
+	$wp_customize->add_section(
+		'rw24_legal',
+		array(
+			'title'       => __( 'Impressum & Datenschutz', 'ruhrwerk24' ),
+			'panel'       => 'rw24',
+			'description' => __( 'Diese Angaben erscheinen automatisch im Impressum und in der Datenschutzerklärung. Die Texte sind eine Vorlage – bitte von einer Rechtsberatung prüfen lassen.', 'ruhrwerk24' ),
+		)
+	);
+
+	$add_text( 'rw24_legal', 'rw_legal_rep', __( 'Vertretungsberechtigt / Inhaber', 'ruhrwerk24' ), 'text', __( 'z. B. Max Mustermann (Geschäftsführer)', 'ruhrwerk24' ) );
+	$add_text( 'rw24_legal', 'rw_legal_register', __( 'Registereintrag', 'ruhrwerk24' ), 'text', __( 'z. B. Amtsgericht Essen, HRB 12345 – leer, wenn nicht eingetragen.', 'ruhrwerk24' ) );
+	$add_text( 'rw24_legal', 'rw_legal_vat', __( 'Umsatzsteuer-ID', 'ruhrwerk24' ), 'text', __( 'z. B. DE123456789', 'ruhrwerk24' ) );
+	$add_text( 'rw24_legal', 'rw_legal_profession', __( 'Berufsbezeichnung', 'ruhrwerk24' ), 'text', __( 'z. B. Installateur- und Heizungsbauermeister, verliehen in Deutschland', 'ruhrwerk24' ) );
+	$add_text( 'rw24_legal', 'rw_legal_chamber', __( 'Zuständige Kammer', 'ruhrwerk24' ), 'text', __( 'z. B. Handwerkskammer Düsseldorf, Georg-Schulhoff-Platz 1, 40221 Düsseldorf', 'ruhrwerk24' ) );
+	$add_text( 'rw24_legal', 'rw_legal_insurance', __( 'Berufshaftpflichtversicherung', 'ruhrwerk24' ), 'textarea', __( 'Versicherer mit Anschrift und Geltungsbereich – nur nötig, wenn die Versicherung Pflicht ist.', 'ruhrwerk24' ) );
+	$add_text( 'rw24_legal', 'rw_legal_hosting', __( 'Hosting-Anbieter', 'ruhrwerk24' ), 'textarea', __( 'Name und Anschrift des Hosters, z. B. IONOS SE, Elgendorfer Str. 57, 56410 Montabaur.', 'ruhrwerk24' ) );
+	$add_text( 'rw24_legal', 'rw_legal_dpo', __( 'Datenschutzbeauftragte(r)', 'ruhrwerk24' ), 'textarea', __( 'Nur ausfüllen, wenn bestellt.', 'ruhrwerk24' ) );
+
+	// Cookie-Hinweis.
+	$wp_customize->add_section(
+		'rw24_consent',
+		array(
+			'title'       => __( 'Cookie-Hinweis', 'ruhrwerk24' ),
+			'panel'       => 'rw24',
+			'description' => __( 'Das Theme selbst setzt keine Cookies. Optionale Dienste wie eine Statistik laufen erst, wenn Besucher zustimmen.', 'ruhrwerk24' ),
+		)
+	);
+
+	$wp_customize->add_setting( 'rw_consent_enabled', array( 'default' => 1, 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control( 'rw_consent_enabled', array( 'label' => __( 'Cookie-Hinweis anzeigen', 'ruhrwerk24' ), 'section' => 'rw24_consent', 'type' => 'checkbox' ) );
+
+	$add_text( 'rw24_consent', 'rw_consent_stats_name', __( 'Name des Statistik-Dienstes', 'ruhrwerk24' ), 'text', __( 'z. B. Matomo – erscheint im Hinweis und in der Datenschutzerklärung.', 'ruhrwerk24' ) );
+
+	// Script-Code nur für Konten, die ohnehin ungefiltertes HTML dürfen.
+	$wp_customize->add_setting(
+		'rw_consent_stats_code',
+		array(
+			'default'           => '',
+			'capability'        => 'unfiltered_html',
+			'sanitize_callback' => static fn( $v ): string => current_user_can( 'unfiltered_html' ) ? (string) $v : '',
+		)
+	);
+	$wp_customize->add_control(
+		'rw_consent_stats_code',
+		array(
+			'label'       => __( 'Statistik-Code (läuft nur nach Zustimmung)', 'ruhrwerk24' ),
+			'description' => __( 'Kompletter Einbindungscode inkl. <script>-Tags. Wird erst nach Zustimmung zur Kategorie „Statistik“ ausgeführt.', 'ruhrwerk24' ),
+			'section'     => 'rw24_consent',
+			'type'        => 'textarea',
+		)
+	);
+
+	// Hashtags.
+	$wp_customize->add_section( 'rw24_social', array( 'title' => __( 'Hashtags & Teilen', 'ruhrwerk24' ), 'panel' => 'rw24' ) );
+	$add_text( 'rw24_social', 'rw_hashtags', __( 'Allgemeine Hashtags', 'ruhrwerk24' ), 'text', __( 'Mit Leerzeichen getrennt. Werden auf Leistungs- und Stadtseiten ergänzt und beim Teilen mitgeschickt.', 'ruhrwerk24' ) );
 }
 add_action( 'customize_register', 'rw24_customize_register' );
 

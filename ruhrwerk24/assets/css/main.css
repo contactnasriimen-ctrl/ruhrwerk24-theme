@@ -580,7 +580,7 @@ body.drawer-open { overflow: hidden; }
 }
 
 .emergency__tag { border-color: var(--emergency-glow); background: var(--emergency-tint); }
-.emergency__tag .dot { background: #ff5a6e; box-shadow: 0 0 0 4px rgb(255 90 110 / .25); }
+.emergency__tag .dot { background: var(--accent-hi); box-shadow: 0 0 0 4px var(--accent-ring); }
 
 /* ======================================================================
    Hero
@@ -1866,7 +1866,7 @@ a.chip:hover { border-color: var(--accent); background: var(--accent-soft); colo
 
 .callbar .icon { width: 22px; height: 22px; }
 .callbar__call { background: var(--accent); color: var(--navy-deep) !important; }
-.callbar__sos .icon { color: #ff7083; }
+.callbar__sos .icon { color: var(--accent-hi); }
 
 @media (max-width: 900px) {
 	.callbar { display: grid; }
@@ -3342,3 +3342,240 @@ a.eyebrow,
 
 	.footer__brand { grid-column: auto; }
 }
+
+/* ======================================================================
+   2.7 - Cookie-Hinweis, Teilen & Hashtags, Rechtstexte, Tempo
+   ====================================================================== */
+
+/* --- Cookie-Hinweis ------------------------------------------------- */
+.consent {
+	position: fixed;
+	z-index: 400;
+	bottom: max(1rem, env(safe-area-inset-bottom));
+	left: max(1rem, env(safe-area-inset-left));
+	width: min(440px, calc(100vw - 2rem));
+	perspective: 1000px;
+}
+
+.consent[hidden] { display: none; }
+
+.consent__card {
+	padding: var(--s-m);
+	border: 1px solid rgb(255 255 255 / .12);
+	border-radius: var(--r-l);
+	background: linear-gradient(160deg, rgb(15 47 85 / .96), rgb(6 22 41 / .98));
+	color: rgb(255 255 255 / .78);
+	box-shadow: 0 30px 70px -20px rgb(0 0 0 / .6), 0 0 0 1px rgb(244 101 26 / .15);
+	backdrop-filter: blur(14px);
+	transform: translateY(30px) rotateX(18deg);
+	transform-origin: 50% 100%;
+	opacity: 0;
+	transition: transform .5s cubic-bezier(.2, .8, .2, 1.1), opacity .4s;
+}
+
+.consent.is-open .consent__card { transform: none; opacity: 1; }
+
+.consent__head { display: flex; align-items: center; gap: .65rem; margin-bottom: .5rem; }
+
+.consent__icon {
+	display: grid;
+	place-items: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 11px;
+	background: var(--accent);
+	color: var(--navy-deep);
+}
+
+.consent__title { margin: 0; font-size: 1.15rem; font-stretch: 80%; font-weight: 800; color: var(--white); }
+
+.consent__text { margin: 0 0 var(--s-s); font-size: var(--fs-xs); line-height: 1.55; }
+.consent__text a { color: var(--accent-hi); font-weight: 700; }
+
+.consent__options { display: grid; gap: .4rem; margin-bottom: var(--s-s); }
+.consent__options[hidden] { display: none; }
+
+.consent__option {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--s-s);
+	padding: .6rem .75rem;
+	border-radius: var(--r-s);
+	background: rgb(255 255 255 / .05);
+	cursor: pointer;
+}
+
+.consent__option strong { display: block; font-size: var(--fs-s); color: var(--white); }
+.consent__option small { display: block; font-size: .75rem; color: rgb(255 255 255 / .6); }
+
+/* Schalter */
+.consent__switch {
+	flex: none;
+	width: 44px;
+	height: 26px;
+	margin: 0;
+	border-radius: 99px;
+	background: rgb(255 255 255 / .18);
+	appearance: none;
+	cursor: pointer;
+	position: relative;
+	transition: background var(--t);
+}
+
+.consent__switch::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--white);
+	transition: transform var(--t) var(--ease);
+}
+
+.consent__switch:checked { background: var(--accent); }
+.consent__switch:checked::after { transform: translateX(18px); }
+.consent__switch:disabled { opacity: .6; cursor: not-allowed; }
+.consent__switch:focus-visible { outline: 3px solid var(--accent-hi); outline-offset: 2px; }
+
+/* Ablehnen und Akzeptieren gleich groß und gleich gut erreichbar */
+.consent__actions {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: .5rem;
+}
+
+.consent__btn { width: 100%; min-height: 46px; box-shadow: none !important; }
+.consent__btn--reject { --btn-bg: rgb(255 255 255 / .1); --btn-fg: var(--white); --btn-bd: rgb(255 255 255 / .25); }
+.consent__btn--reject:hover { --btn-bg: rgb(255 255 255 / .18); }
+.consent__btn--accept { --btn-bg: var(--accent); --btn-fg: var(--navy-deep); }
+.consent__btn--save { grid-column: 1 / -1; --btn-bg: var(--white); --btn-fg: var(--navy); }
+
+.consent__more {
+	grid-column: 1 / -1;
+	min-height: 40px;
+	border: 0;
+	background: none;
+	font: inherit;
+	font-size: var(--fs-xs);
+	font-weight: 700;
+	color: rgb(255 255 255 / .75);
+	text-decoration: underline;
+	text-underline-offset: .2em;
+	cursor: pointer;
+}
+
+@media (max-width: 900px) {
+	/* Über der Schnellleiste */
+	.consent { bottom: calc(72px + env(safe-area-inset-bottom)); left: .75rem; width: calc(100vw - 1.5rem); }
+}
+
+.link-button {
+	padding: 0;
+	border: 0;
+	background: none;
+	font: inherit;
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: .2em;
+	cursor: pointer;
+}
+
+.footer__cookies { min-height: 44px; font-size: var(--fs-xs); color: rgb(255 255 255 / .7); }
+.footer__cookies:hover { color: var(--white); }
+
+/* --- Hashtags und Teilen -------------------------------------------- */
+.share { padding-block: var(--s-l); }
+
+.share__inner {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: var(--s-l);
+	align-items: start;
+	padding: var(--s-m) var(--s-l);
+	border: 1px solid var(--line);
+	border-radius: var(--r-l);
+	background: rgb(255 255 255 / .9);
+	box-shadow: var(--shadow-s);
+}
+
+@media (max-width: 860px) {
+	.share__inner { grid-template-columns: 1fr; padding: var(--s-m); }
+}
+
+.share__title,
+.share__label {
+	margin: 0 0 .6rem;
+	font-size: var(--fs-xs);
+	font-stretch: 100%;
+	font-weight: 800;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.share__list { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0; padding: 0; list-style: none; }
+
+.hashtag {
+	display: inline-flex;
+	align-items: center;
+	min-height: 40px;
+	padding: .4rem .85rem;
+	border-radius: 99px;
+	background: var(--accent-soft);
+	font-size: var(--fs-s);
+	font-weight: 700;
+	color: var(--accent-ink);
+	text-decoration: none;
+	transition: background var(--t), color var(--t), transform var(--t) var(--ease);
+}
+
+a.hashtag:hover { background: var(--accent); color: var(--navy-deep); transform: translateY(-2px) rotate(-1.5deg); }
+
+.share__btn {
+	display: inline-flex;
+	align-items: center;
+	gap: .45rem;
+	min-height: 44px;
+	padding: .45rem .9rem;
+	border: 1px solid var(--line);
+	border-radius: var(--r-s);
+	background: var(--white);
+	font: inherit;
+	font-size: var(--fs-xs);
+	font-weight: 700;
+	color: var(--ink);
+	text-decoration: none;
+	cursor: pointer;
+	transition: border-color var(--t), background var(--t), color var(--t), transform var(--t) var(--ease);
+}
+
+.share__btn .icon { width: 16px; height: 16px; color: var(--accent-ink); }
+.share__btn:hover { border-color: var(--navy); background: var(--navy); color: var(--white); transform: translateY(-2px); }
+.share__btn:hover .icon { color: var(--accent-hi); }
+.share__btn.is-done { border-color: #2e9e5b; background: #2e9e5b; color: var(--white); }
+
+/* --- Rechtstexte ---------------------------------------------------- */
+.legal h2 { margin-top: var(--s-l); font-size: 1.4rem; }
+.legal h3 { margin: var(--s-m) 0 .3rem; font-size: 1.05rem; font-stretch: 100%; }
+.legal p, .legal li { font-size: var(--fs-s); }
+.legal__stand { margin-top: var(--s-l); color: var(--muted); }
+
+.legal-missing {
+	display: inline-block;
+	padding: .2rem .55rem;
+	border: 1px dashed var(--emergency);
+	border-radius: var(--r-s);
+	background: var(--emergency-soft);
+	font-size: var(--fs-xs);
+	font-weight: 700;
+	color: var(--emergency-lo);
+}
+
+/* Lange Wörter (z. B. "Datenschutzerklärung", lange Hashtags) auf 320 px umbrechen */
+.split-words .w { max-width: 100%; }
+.split-words .w > span { max-width: 100%; overflow-wrap: anywhere; hyphens: auto; }
+.hashtag { max-width: 100%; overflow-wrap: anywhere; }
+.share__inner > * { min-width: 0; }

@@ -27,6 +27,15 @@ Theme für einen Handwerks- und Notdienstbetrieb in NRW: Rohrreinigung, Haustech
 - **Datenschutz:** keine externen Anfragen, keine Cookies, kein jQuery, Schrift lokal.
 - **Einrichtung per Klick:** Beim Aktivieren entstehen Leistungen, Seiten und Menüs.
 
+### Neu in 2.7
+
+- **Umzug & Transport zuerst** – auf der Startseite, in Menüs, Formular und überall, wo Leistungen gelistet sind.
+- **Orange statt Rot** für Notdienst-Elemente (`#C2410C`, AA-Kontrast mit weißer Schrift).
+- **Impressum und Datenschutzerklärung** werden aus den Customizer-Angaben erzeugt (Shortcodes `[rw24_impressum]`, `[rw24_datenschutz]`). Vorlage – bitte rechtlich prüfen lassen.
+- **Cookie-Hinweis** mit gleichwertigem „Ablehnen“ und „Akzeptieren“, Einstellungen je Kategorie, jederzeit änderbar. Optionaler Statistik-Code läuft erst nach Zustimmung.
+- **Hashtags & Teilen** auf Leistungs- und Stadtseiten: Hashtags als interne Links, Teilen-Knöpfe ohne fremde Scripts.
+- **Schneller**: gebündelte und minifizierte Assets in `ruhrwerk24/assets/dist/` (kritisches CSS+JS 29 → 20 KB gzip, 4 → 2 Anfragen; inkl. 3D 216 → 168 KB gzip).
+
 ## Installation
 
 1. ZIP aus den [Releases](https://github.com/contactnasriimen-ctrl/ruhrwerk24-theme/releases/latest) unter *Design › Themes › Theme hinzufügen* hochladen und aktivieren.
@@ -46,6 +55,7 @@ ruhrwerk24/          das Theme
   assets/js/hero3d.js  3D-Szene
 docs/                statische Demo für GitHub Pages
 scripts/
+  build-assets.mjs   minifizierte Assets nach ruhrwerk24/assets/dist/ (esbuild)
   build-zip.php      installierbares ZIP nach dist/
   build-demo.php     Demo aus einer lokalen WordPress-Installation nach docs/
 ```

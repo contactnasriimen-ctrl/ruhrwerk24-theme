@@ -152,6 +152,9 @@ foreach ( rw24_cities() as $rw_slug => $rw_city ) {
 				)
 			);
 			?>
+			<?php if ( rw24_consent_enabled() ) : ?>
+				<button type="button" class="link-button footer__cookies" data-consent-open><?php esc_html_e( 'Cookie-Einstellungen', 'ruhrwerk24' ); ?></button>
+			<?php endif; ?>
 			<span class="footer__credit"><?php echo wp_kses_post( rw24_credit() ); ?></span>
 			<a class="totop" href="#header">
 				<svg class="totop__ring" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" pathLength="100"></circle></svg>

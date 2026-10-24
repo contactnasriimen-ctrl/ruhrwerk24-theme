@@ -12,7 +12,7 @@
 	/* Grundfarben */
 	--navy: #0A2342;
 	--accent: #F4651A;
-	--emergency: #D7263D;
+	--emergency: #C2410C;
 
 	/* Abgeleitet von --navy */
 	--navy-deep: #061629;               /* 62 % + Schwarz */
@@ -33,11 +33,11 @@
 	--accent-glow: rgb(244 101 26 / .7);
 
 	/* Abgeleitet von --emergency */
-	--emergency-lo: #b72034;            /* 85 % + Schwarz */
-	--emergency-soft: #fbe9ec;          /* 10 % auf Weiß */
-	--emergency-dark: #4f1c30;          /* 35 % auf --navy-deep */
-	--emergency-tint: rgb(215 38 61 / .22);
-	--emergency-glow: rgb(215 38 61 / .6);
+	--emergency-lo: #a5370a;            /* 85 % + Schwarz */
+	--emergency-soft: #f9ece7;          /* 10 % auf Weiß */
+	--emergency-dark: #48251f;          /* 35 % auf --navy-deep */
+	--emergency-tint: rgb(194 65 12 / .22);
+	--emergency-glow: rgb(194 65 12 / .6);
 
 	/* Neutrale */
 	--ink: #142033;

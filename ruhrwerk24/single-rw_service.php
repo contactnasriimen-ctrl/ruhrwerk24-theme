@@ -67,6 +67,8 @@ while ( have_posts() ) :
 		);
 		?>
 
+		<?php get_template_part( 'template-parts/hashtags' ); ?>
+
 		<?php get_template_part( 'template-parts/cta' ); ?>
 
 	</main>

@@ -28,11 +28,11 @@ function rw24_blueprint_pages(): array {
 		),
 		'impressum'                 => array(
 			'title'   => __( 'Impressum', 'ruhrwerk24' ),
-			'content' => '<!-- wp:paragraph --><p>' . __( 'Bitte ergänzen: Angaben gemäß § 5 DDG (Name, Anschrift, Vertretungsberechtigte, Kontakt, Registereintrag, USt-ID, Kammer und Berufsbezeichnung).', 'ruhrwerk24' ) . '</p><!-- /wp:paragraph -->',
+			'content' => rw24_legal_page_content( 'impressum' ),
 		),
 		'datenschutz'               => array(
 			'title'   => __( 'Datenschutzerklärung', 'ruhrwerk24' ),
-			'content' => '<!-- wp:paragraph --><p>' . __( 'Bitte ergänzen. Hinweise für die Erklärung: Das Theme lädt keine externen Schriften oder Skripte und setzt keine Cookies. Anfragen über das Formular werden in WordPress gespeichert und nach der im Customizer eingestellten Frist automatisch gelöscht.', 'ruhrwerk24' ) . '</p><!-- /wp:paragraph -->',
+			'content' => rw24_legal_page_content( 'datenschutz' ),
 		),
 	);
 }
@@ -185,6 +185,20 @@ function rw24_upgrade_blueprint(): void {
 	// Leistungen, die seit der installierten Version dazugekommen sind.
 	if ( $previous ) {
 		rw24_setup_services( $previous );
+	}
+
+	// 2.7: Impressum und Datenschutz aus den Customizer-Angaben.
+	if ( $previous && version_compare( $previous, '2.7.0', '<' ) ) {
+		rw24_upgrade_legal_pages();
+	}
+
+	// 2.7: Umzug & Transport nach vorn - nur, wenn die Reihenfolge noch die
+	// vom Theme gesetzte ist (30). Eine eigene Sortierung bleibt unangetastet.
+	if ( $previous && version_compare( $previous, '2.7.0', '<' ) ) {
+		$transport = get_term_by( 'slug', rw24_transport_group(), 'rw_service_group' );
+		if ( $transport && 30 === (int) get_term_meta( $transport->term_id, '_rw_order', true ) ) {
+			update_term_meta( $transport->term_id, '_rw_order', -10 );
+		}
 	}
 
 	foreach ( rw24_blueprint_services() as $slug => $service ) {

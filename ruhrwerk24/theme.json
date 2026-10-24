@@ -11,7 +11,7 @@
 			"palette": [
 				{ "slug": "navy", "name": "Navy", "color": "#0A2342" },
 				{ "slug": "accent", "name": "Orange", "color": "#F4651A" },
-				{ "slug": "emergency", "name": "Notdienst-Rot", "color": "#D7263D" },
+				{ "slug": "emergency", "name": "Notdienst-Orange", "color": "#C2410C" },
 				{ "slug": "ink", "name": "Text dunkel", "color": "#142033" },
 				{ "slug": "grey", "name": "Hellgrau", "color": "#F4F6F9" },
 				{ "slug": "white", "name": "Weiß", "color": "#FFFFFF" }
