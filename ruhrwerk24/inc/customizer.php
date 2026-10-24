@@ -20,7 +20,7 @@ function rw24_defaults(): array {
 		// Farben.
 		'rw_color_primary'   => '#0A2342',
 		'rw_color_accent'    => '#F4651A',
-		'rw_color_emergency' => '#C2410C',
+		'rw_color_emergency' => '#F97316',
 
 		// Kontakt.
 		'rw_owner'           => 'Ruhrwerk24',
@@ -299,6 +299,23 @@ function rw24_mix( string $a, string $b, float $weight ): string {
 }
 
 /**
+ * Relative Helligkeit nach WCAG (0 = schwarz, 1 = weiß).
+ *
+ * Entscheidet, ob auf einer Fläche dunkle oder weiße Schrift steht.
+ */
+function rw24_luminance( string $hex ): float {
+	$lin = array_map(
+		static function ( int $c ): float {
+			$c /= 255;
+			return $c <= .03928 ? $c / 12.92 : ( ( $c + .055 ) / 1.055 ) ** 2.4;
+		},
+		rw24_rgb( $hex )
+	);
+
+	return .2126 * $lin[0] + .7152 * $lin[1] + .0722 * $lin[2];
+}
+
+/**
  * Farbe mit Deckkraft als rgb()-Wert.
  */
 function rw24_alpha( string $hex, float $alpha ): string {
@@ -335,6 +352,8 @@ function rw24_color_tokens( string $navy, string $accent, string $emergency ): a
 		'--accent-glow'    => rw24_alpha( $accent, .7 ),
 		'--emergency'      => $emergency,
 		'--emergency-lo'   => rw24_mix( $emergency, '#000000', .85 ),
+		'--emergency-ink'  => rw24_mix( $emergency, '#000000', .70 ),
+		'--emergency-fg'   => rw24_luminance( $emergency ) > .22 ? $deep : '#ffffff',
 		'--emergency-soft' => rw24_mix( $emergency, '#ffffff', .10 ),
 		'--emergency-dark' => rw24_mix( $emergency, $deep, .35 ),
 		'--emergency-tint' => rw24_alpha( $emergency, .22 ),

@@ -182,7 +182,7 @@ address { font-style: normal; }
 
 .btn--emergency {
 	--btn-bg: var(--emergency);
-	--btn-fg: var(--white);
+	--btn-fg: var(--emergency-fg);
 }
 
 .btn--emergency:hover { --btn-bg: var(--emergency-lo); }
@@ -855,7 +855,7 @@ html:not(.js) .qf__progress { display: none; }
 	padding: .75rem .9rem;
 	border-radius: var(--r-s);
 	background: var(--emergency-soft);
-	color: var(--emergency-lo);
+	color: var(--emergency-ink);
 	font-size: var(--fs-s);
 	font-weight: 600;
 }
@@ -916,7 +916,7 @@ html:not(.js) .qf__progress { display: none; }
 	margin: .5rem 0 0;
 	font-size: var(--fs-s);
 	font-weight: 600;
-	color: var(--emergency-lo);
+	color: var(--emergency-ink);
 }
 
 .qf__consent {
@@ -1119,7 +1119,7 @@ html:not(.js) .qf__progress { display: none; }
 	letter-spacing: .04em;
 }
 
-.badge--emergency { background: var(--emergency-soft); color: var(--emergency-lo); }
+.badge--emergency { background: var(--emergency-soft); color: var(--emergency-ink); }
 
 /* ======================================================================
    Medien
@@ -1238,7 +1238,7 @@ html:not(.js) .qf__progress { display: none; }
 	height: 84px;
 	border-radius: 24px;
 	background: var(--emergency);
-	color: var(--white);
+	color: var(--emergency-fg);
 	box-shadow: 0 16px 40px -12px var(--emergency-glow);
 }
 
@@ -1593,7 +1593,7 @@ a.chip:hover { border-color: var(--accent); background: var(--accent-soft); colo
 	margin-bottom: var(--s-s);
 	border-radius: 50%;
 	background: var(--emergency);
-	color: var(--white);
+	color: var(--emergency-fg);
 	font-weight: 800;
 }
 
@@ -1638,7 +1638,7 @@ a.chip:hover { border-color: var(--accent); background: var(--accent-soft); colo
 	font-weight: 600;
 }
 
-.notice--error { background: var(--emergency-soft); color: var(--emergency-lo); }
+.notice--error { background: var(--emergency-soft); color: var(--emergency-ink); }
 .notice .icon { margin-top: .15rem; }
 
 .thanks { max-width: 680px; margin-inline: auto; text-align: center; }
@@ -3571,7 +3571,7 @@ a.hashtag:hover { background: var(--accent); color: var(--navy-deep); transform:
 	background: var(--emergency-soft);
 	font-size: var(--fs-xs);
 	font-weight: 700;
-	color: var(--emergency-lo);
+	color: var(--emergency-ink);
 }
 
 /* Lange Wörter (z. B. "Datenschutzerklärung", lange Hashtags) auf 320 px umbrechen */

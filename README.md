@@ -30,7 +30,7 @@ Theme für einen Handwerks- und Notdienstbetrieb in NRW: Rohrreinigung, Haustech
 ### Neu in 2.7
 
 - **Umzug & Transport zuerst** – auf der Startseite, in Menüs, Formular und überall, wo Leistungen gelistet sind.
-- **Orange statt Rot** für Notdienst-Elemente (`#C2410C`, AA-Kontrast mit weißer Schrift).
+- **Orange statt Rot** für Notdienst-Elemente (`#F97316` mit dunkler Schrift, 6,5:1 Kontrast).
 - **Impressum und Datenschutzerklärung** werden aus den Customizer-Angaben erzeugt (Shortcodes `[rw24_impressum]`, `[rw24_datenschutz]`). Vorlage – bitte rechtlich prüfen lassen.
 - **Cookie-Hinweis** mit gleichwertigem „Ablehnen“ und „Akzeptieren“, Einstellungen je Kategorie, jederzeit änderbar. Optionaler Statistik-Code läuft erst nach Zustimmung.
 - **Hashtags & Teilen** auf Leistungs- und Stadtseiten: Hashtags als interne Links, Teilen-Knöpfe ohne fremde Scripts.

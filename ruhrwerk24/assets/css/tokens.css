@@ -12,7 +12,7 @@
 	/* Grundfarben */
 	--navy: #0A2342;
 	--accent: #F4651A;
-	--emergency: #C2410C;
+	--emergency: #F97316;
 
 	/* Abgeleitet von --navy */
 	--navy-deep: #061629;               /* 62 % + Schwarz */
@@ -33,11 +33,13 @@
 	--accent-glow: rgb(244 101 26 / .7);
 
 	/* Abgeleitet von --emergency */
-	--emergency-lo: #a5370a;            /* 85 % + Schwarz */
-	--emergency-soft: #f9ece7;          /* 10 % auf Weiß */
-	--emergency-dark: #48251f;          /* 35 % auf --navy-deep */
-	--emergency-tint: rgb(194 65 12 / .22);
-	--emergency-glow: rgb(194 65 12 / .6);
+	--emergency-lo: #d46213;            /* 85 % + Schwarz */
+	--emergency-ink: #ae510f;           /* 70 % + Schwarz: Notdienst-Orange als Textfarbe, 5,3:1 auf Weiß */
+	--emergency-fg: #061629;            /* Schrift auf Notdienst-Orange, 6,5:1 */
+	--emergency-soft: #fef1e8;          /* 10 % auf Weiß */
+	--emergency-dark: #5b3722;          /* 35 % auf --navy-deep */
+	--emergency-tint: rgb(249 115 22 / .22);
+	--emergency-glow: rgb(249 115 22 / .6);
 
 	/* Neutrale */
 	--ink: #142033;

@@ -593,7 +593,7 @@ function buildTruck(ctx) {
 	truck.add(bumper);
 
 	const headMat = new THREE.MeshStandardMaterial({ color: '#fff6dc', emissive: '#ffe3a0', emissiveIntensity: 2.2 });
-	const tailMat = new THREE.MeshStandardMaterial({ color: '#ff3048', emissive: '#ff1530', emissiveIntensity: 1.8 });
+	const tailMat = new THREE.MeshStandardMaterial({ color: '#ff8a1f', emissive: '#ff6a00', emissiveIntensity: 1.8 }); // Rücklichter in Orange - keine roten Akzente im Design
 	[0.72, -0.72].forEach((z) => {
 		const head = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.22, 0.42), headMat);
 		head.position.set(3.15, 1.15, z);
@@ -1036,7 +1036,7 @@ export function mount(host, opts = {}) {
 	const color = (name, fallback) => new THREE.Color((css.getPropertyValue(name) || '').trim() || fallback);
 	const navy = color('--navy', '#0A2342');
 	const accent = color('--accent', '#F4651A');
-	const emergency = color('--emergency', '#C2410C');
+	const emergency = color('--emergency', '#F97316');
 
 	let renderer;
 	try {
